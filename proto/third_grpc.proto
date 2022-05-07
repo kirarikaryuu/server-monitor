@@ -1,0 +1,150 @@
+
+syntax = "proto3";
+
+package third.grpc;
+
+message Empty {}
+
+
+message UserLoginRequest
+{ 
+    //发送的登录请求       
+    string UserName = 1;//用户名名称    例如:root
+    string PassWord = 2;//密码          例如:root123
+}
+
+message UserLoginResponse
+{
+    //返回的登录响应    1:表示成功     0:失败     如果返回其他一律按照失败处理
+    uint32 RetCode = 1;   //1:SUCCESS, 0:FAILED
+}
+
+service UserLoginService
+{
+    rpc VerifyUserPassWord(UserLoginRequest) returns(UserLoginResponse) {}
+}
+
+//-----------------------------------------------------------------------------
+// Implementation of SCADA Control API
+// //-----------------------------------------------------------------------------
+
+message ControlCommandPara
+{
+    enum ControlType
+    {
+        YK = 0;
+        YT = 1;
+        AO = 2;
+    }
+
+    ControlType CtlType = 1;
+    string ObjName = 2;
+    int32  ObjValue = 3;   
+}
+
+message ControlOperResult
+{
+    enum OprResCode
+    {
+        SUCCESS = 0;
+        FAILED = 1;
+    }
+
+    OprResCode result = 1;
+}
+
+
+service ScadaControlService
+{
+    rpc ExecYkCommand(ControlCommandPara) returns(ControlOperResult) {}
+}
+
+//-----------------------------------------------------------------------------
+// Implementation of AutoCheckStation API
+// //-----------------------------------------------------------------------------
+
+message CheckDevStatusCmd
+{
+    string RequestDevStatus = 1;     
+}
+
+message DevStatusReply
+{
+    string ReplyDevStatus = 1;     
+}
+
+message AutoCheckDataRequest
+{
+    uint32 OpenStationFlag = 1;
+}
+
+message AutoCheckDataReply
+{
+    string AutoCheckData = 1;    //AutoCheckDev
+}
+
+service AutoCheckService
+{
+    rpc AutoCheckCommand(CheckDevStatusCmd) returns(DevStatusReply) {}
+	rpc GetAutoCheckDevRequest(AutoCheckDataRequest) returns(AutoCheckDataReply) {}
+}
+
+//-----------------------------------------------------------------------------
+// Implementation of  VideoPatrolp
+// //-----------------------------------------------------------------------------
+
+message VideoPatrolDataReply
+{
+    string VideoPatrolData = 1;    
+}
+
+message VideoPatrolDataRequest
+{
+    uint32 OpenStationFlag = 1;
+}
+
+message CameraGrpDataRequest
+{
+     string VideoPatrolName = 1;    
+}
+
+message CameraGrpDataReply
+{
+    string CameraGrpData = 1;    
+}
+
+
+service VideoPatrolService
+{
+    rpc GetVideoPatrolQue(VideoPatrolDataRequest) returns(VideoPatrolDataReply) {}
+	rpc GetCameraGrpQue(CameraGrpDataRequest) returns(CameraGrpDataReply) {}
+}
+
+
+//-----------------------------------------------------------------------------
+// Implementation of ControlStation 
+// //-----------------------------------------------------------------------------
+
+message ControlStaFlowReply
+{
+    string ControlStaFlowData = 1;    
+}
+message ControlStaFlowRequest
+{
+    uint32 OpenStationFlag = 1;    
+}
+
+message ControlStaStepReply
+{
+    string ControlStaStepData = 1;    
+}
+message ControlStaStepRequest
+{
+   uint32 ControlStaFlowNo = 1;       
+}
+
+service ControlStationService
+{
+    rpc GetControlStaFlow(ControlStaFlowRequest) returns(ControlStaFlowReply) {}
+	rpc GetControlStaStep(ControlStaStepRequest) returns(ControlStaStepReply) {}
+}
