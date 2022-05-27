@@ -7,6 +7,7 @@ const wsFlow = new WebSocket.Server({ port: 8887 })
 const wsEnv = new WebSocket.Server({ port: 8888 })
 const inoutEnv = new WebSocket.Server({ port: 8889 })
 const alarm = new WebSocket.Server({ port: 8890 })
+const patrol = new WebSocket.Server({ port: 8891 })
 
 // #define JASON_MONITORENV_DATANUM "monitorEnvAreaNum"
 // #define JASON_MONITORENV_ENVAREATYPEID "envAreaTypeID"
@@ -409,4 +410,22 @@ alarm.on('connection', (ws) => {
   } catch (error) {
     console.log(error)
   }
+})
+
+// 客流密度ws
+patrol.on('connection', (ws) => {
+  //推送
+  const patrolTimer = setInterval(() => {
+    let res = {
+      patrolFuncId: 1,
+      patrolName: '123'
+    }
+    res = JSON.stringify(res)
+    ws.send(res, (err) => {
+      if (err) {
+        clearInterval(patrolTimer)
+        ws.close()
+      }
+    })
+  }, 30000)
 })
