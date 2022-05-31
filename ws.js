@@ -414,14 +414,20 @@ alarm.on('connection', (ws) => {
   }
 })
 
-// 客流密度ws
+// 自动巡检ws
 patrol.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    console.log('patrol received: %s', message)
+  })
   //推送
   const patrolTimer = setInterval(() => {
-    let res = {
-      patrolFuncId: 1,
-      patrolName: '123'
-    }
+    const id = [1, 2]
+    const name = ['巡检1号', '巡检2号']
+    const count = Random.natural(0, 1)
+    let res = Mock.mock({
+      patrolFuncId: id[count],
+      patrolName: name[count]
+    })
     res = JSON.stringify(res)
     ws.send(res, (err) => {
       if (err) {
@@ -429,5 +435,5 @@ patrol.on('connection', (ws) => {
         ws.close()
       }
     })
-  }, 30000)
+  }, 3000)
 })
