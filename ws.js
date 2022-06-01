@@ -418,6 +418,25 @@ alarm.on('connection', (ws) => {
 patrol.on('connection', (ws) => {
   ws.on('message', (message) => {
     console.log('patrol received: %s', message)
+    const res = JSON.parse(message)
+    console.log(res.RegCommand)
+    if (res && res.RegCommand == 2) {
+      const obj = {
+        devYxInfo: [],
+        cameraGrp: [1, 2, 3, 4, 5]
+      }
+      const count = Random.natural(1, 3)
+      // const count = 1
+      for (i = 0; i < count; i++) {
+        const info = {
+          devYxDesc: '描述' + i,
+          devYxStateDesc: '状态描述' + i,
+          dexYxstateAlarmFlag: 0
+        }
+        obj.devYxInfo.push(info)
+      }
+      ws.send(JSON.stringify(obj))
+    }
   })
   //推送
   const patrolTimer = setInterval(() => {
