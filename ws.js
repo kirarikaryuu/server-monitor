@@ -439,7 +439,8 @@ patrol.on('connection', (ws) => {
     }
   })
   //推送
-  const patrolTimer = setInterval(() => {
+  const push = () => {
+    console.log(123)
     const id = [1, 2]
     const name = ['巡检1号', '巡检2号']
     const count = Random.natural(0, 1)
@@ -454,5 +455,9 @@ patrol.on('connection', (ws) => {
         ws.close()
       }
     })
-  }, 3000)
+  }
+  setTimeout(() => {
+    push()
+  }, 6000)
+  // const patrolTimer = setInterval(push(), 3000)
 })
