@@ -421,18 +421,18 @@ patrol.on('connection', (ws) => {
     const res = JSON.parse(message)
     console.log(res.RegCommand)
     if (res && res.RegCommand == 2) {
-      const obj = {
+      const obj = Mock.mock({
         devYxInfo: [],
-        cameraGrp: [1, 2, 3, 4, 5]
-      }
+        'cameraGrp|1': [[1], [1, 2], [1, 2, 3]]
+      })
       const count = Random.natural(1, 3)
       // const count = 1
       for (i = 0; i < count; i++) {
-        const info = {
+        const info = Mock.mock({
           devYxDesc: '描述' + i,
           devYxStateDesc: '状态描述' + i,
-          dexYxstateAlarmFlag: 0
-        }
+          'devYxStateAlarmFlag|1': [0, 1]
+        })
         obj.devYxInfo.push(info)
       }
       ws.send(JSON.stringify(obj))
@@ -451,7 +451,7 @@ patrol.on('connection', (ws) => {
     res = JSON.stringify(res)
     ws.send(res, (err) => {
       if (err) {
-        clearInterval(patrolTimer)
+        // if (patrolTimer) clearInterval(patrolTimer)
         ws.close()
       }
     })
