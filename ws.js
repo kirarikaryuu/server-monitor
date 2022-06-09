@@ -3,11 +3,11 @@ const Mock = require('mockjs')
 const sxlList = require('./data')
 
 const Random = Mock.Random
-const wsFlow = new WebSocket.Server({ port: 8887 })
-const wsEnv = new WebSocket.Server({ port: 8888 })
-const inoutEnv = new WebSocket.Server({ port: 8889 })
-const alarm = new WebSocket.Server({ port: 8890 })
-const patrol = new WebSocket.Server({ port: 8891 })
+const wsFlow = new WebSocket.Server({ port: 9484 })
+const wsEnv = new WebSocket.Server({ port: 9483 })
+const inoutEnv = new WebSocket.Server({ port: 9485 })
+const alarm = new WebSocket.Server({ port: 9489 })
+const patrol = new WebSocket.Server({ port: 9487 })
 
 // #define JASON_MONITORENV_DATANUM "monitorEnvAreaNum"
 // #define JASON_MONITORENV_ENVAREATYPEID "envAreaTypeID"
@@ -419,7 +419,6 @@ patrol.on('connection', (ws) => {
   ws.on('message', (message) => {
     console.log('patrol received: %s', message)
     const res = JSON.parse(message)
-    console.log(res.RegCommand)
     if (res && res.RegCommand == 2) {
       const obj = Mock.mock({
         devYxInfo: [],
