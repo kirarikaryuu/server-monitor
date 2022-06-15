@@ -298,8 +298,9 @@ alarm.on('connection', (ws) => {
       alarmlevel: Random.natural(1, 3),
       'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
       tonetimes: '语音报警次数', //暂时未用到
-      equipmentid: sxlList[index],
+      equipmentid: sxlList[index] + '',
       station_desc: '渌水道站',
+      'system_name|1': ['FAS', 'AFC', 'CCTV'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       member_name0: '成员名', //暂时未用到
       char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
@@ -343,8 +344,9 @@ alarm.on('connection', (ws) => {
           alarmlevel: Random.natural(1, 3),
           'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
           tonetimes: '语音报警次数', //暂时未用到
-          equipmentid: sxlList[count],
+          equipmentid: sxlList[count] + '',
           station_desc: '渌水道站',
+          'system_name|1': ['FAS', 'AFC', 'CCTV'],
           'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
           member_name0: '成员名', //暂时未用到
           char_info: '宇视系统IABA:109VC渌水道-上行尾' + count,
