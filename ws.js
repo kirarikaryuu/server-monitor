@@ -18,6 +18,14 @@ const patrol = new WebSocket.Server({ port: 9487 })
 // #define JASON_MONITORENV_MONITORTYPEUNIT "envNameTypeUnit"
 // #define JSON_REGDATA_MONITORYCVALUE "monitorYcValue"
 
+const guid = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
 // 客流密度ws
 wsFlow.on('connection', (ws) => {
   const place = Random.natural(7, 14)
@@ -215,7 +223,6 @@ wsEnv.on('connection', (ws) => {
     }
     res = JSON.stringify(res)
     ws.send(res, (err) => {
-      console.log(err)
       // console.log(envTimer)
       if (err) {
         if (envTimer) {
@@ -424,12 +431,13 @@ patrol.on('connection', (ws) => {
     if (res && res.RegCommand == 2) {
       const obj = Mock.mock({
         devYxInfo: [],
-        'cameraGrp|1': [[1], [1, 2], [1, 2, 3]]
+        'cameraGrp|1': [[1], [1, 2]]
       })
       const count = Random.natural(1, 3)
       // const count = 1
       for (i = 0; i < count; i++) {
         const info = Mock.mock({
+          devYxName: guid(),
           devYxDesc: '描述' + i,
           devYxStateDesc: '状态描述' + i,
           'devYxStateAlarmFlag|1': [0, 1]
