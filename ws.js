@@ -425,6 +425,23 @@ alarm.on('connection', (ws) => {
 
 // 自动巡检ws
 patrol.on('connection', (ws) => {
+  const ykObj = Mock.mock({
+    devYxName: guid(),
+    devYxDesc: '遥信描述',
+    devYxStateDesc: '遥信状态描述',
+    'devYxStateAlarmFlag|1': [0, 1],
+    isYk: 1,
+    ykStateGrpDesc: [
+      {
+        ykStateDesc: 'node1',
+        ykValue: 1
+      },
+      {
+        ykStateDesc: 'node2',
+        ykValue: 2
+      }
+    ]
+  })
   ws.on('message', (message) => {
     console.log('patrol received: %s', message)
     const res = JSON.parse(message)
@@ -440,11 +457,35 @@ patrol.on('connection', (ws) => {
           devYxName: guid(),
           devYxDesc: '描述' + i,
           devYxStateDesc: '状态描述' + i,
-          'devYxStateAlarmFlag|1': [0, 1]
+          'devYxStateAlarmFlag|1': [0, 1],
+          isYk: 0
         })
         obj.devYxInfo.push(info)
       }
+      obj.devYxInfo.push(ykObj)
       ws.send(JSON.stringify(obj))
+
+      setTimeout(() => {
+        const result = Mock.mock({
+          type: 'update',
+          data: []
+        })
+        const data = {
+          devId: res.RegDevId,
+          devYxInfo: []
+        }
+        obj.devYxInfo.forEach((val) => {
+          data.devYxInfo.push(
+            Mock.mock({
+              devYxName: val.devYxName,
+              devYxStateDesc: '更新了',
+              'devYxStateAlarmFlag|1': [0, 1]
+            })
+          )
+        })
+        result.data.push(data)
+        ws.send(JSON.stringify(result))
+      }, 1000)
     }
   })
   //推送
