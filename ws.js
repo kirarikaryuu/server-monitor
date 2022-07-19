@@ -38,7 +38,7 @@ wsFlow.on('connection', (ws) => {
       monitorAreaDesc: '位置' + index,
       monitorAreaID: index,
       monitorYcValue: Random.natural(0, 1000),
-      areaDisplayRange: Random.natural(1, 100),
+      areaDisplayRange: Random.natural(1, 80),
       paxVolumeWarn: 60,
       paxVolumeAlarm: 80,
       position: {
@@ -64,7 +64,7 @@ wsFlow.on('connection', (ws) => {
           monitorAreaDesc: '位置' + num,
           monitorAreaID: num,
           monitorYcValue: Random.natural(0, 1000),
-          areaDisplayRange: Random.natural(1, 100),
+          areaDisplayRange: Random.natural(1, 80),
           paxVolumeWarn: 60,
           paxVolumeAlarm: 80,
           position: {
