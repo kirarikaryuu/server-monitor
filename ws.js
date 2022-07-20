@@ -41,11 +41,11 @@ wsFlow.on('connection', (ws) => {
       areaDisplayRange: Random.natural(1, 80),
       paxVolumeWarn: 60,
       paxVolumeAlarm: 80,
-      position: {
+      position: Mock.mock({
         x: Random.natural(-900, -7500),
-        y: 11223,
+        'y|1': [11223, 9700],
         z: Random.natural(-12000, -25000)
-      }
+      })
     }
     res.data.push(obj)
   }
@@ -67,11 +67,11 @@ wsFlow.on('connection', (ws) => {
           areaDisplayRange: Random.natural(1, 80),
           paxVolumeWarn: 60,
           paxVolumeAlarm: 80,
-          position: {
+          position: Mock.mock({
             x: Random.natural(-900, -7500),
-            y: 11223,
+            'y|1': [11223, 9700],
             z: Random.natural(-12000, -25000)
-          }
+          })
         }
       ]
     }
