@@ -8,6 +8,7 @@ const wsEnv = new WebSocket.Server({ port: 9483 })
 const inoutEnv = new WebSocket.Server({ port: 9485 })
 const alarm = new WebSocket.Server({ port: 9489 })
 const patrol = new WebSocket.Server({ port: 9487 })
+const envMonitor = new WebSocket.Server({ port: 9488 })
 
 // #define JASON_MONITORENV_DATANUM "monitorEnvAreaNum"
 // #define JASON_MONITORENV_ENVAREATYPEID "envAreaTypeID"
@@ -51,9 +52,7 @@ wsFlow.on('connection', (ws) => {
   }
   res = JSON.stringify(res)
   ws.send(res)
-  ws.on('message', (message) => {
-    // console.log('flow received: %s', message)
-  })
+
   //推送变化值
   const flowTimer = setInterval(() => {
     let num = Random.natural(1, place)
@@ -506,7 +505,7 @@ patrol.on('connection', (ws) => {
   })
   //推送
   const push = () => {
-    console.log(123)
+    console.log('自动巡检push')
     const id = [1, 2]
     const name = ['巡检1号', '巡检2号']
     const count = Random.natural(0, 1)
@@ -526,4 +525,46 @@ patrol.on('connection', (ws) => {
     push()
   }, 6000)
   // const patrolTimer = setInterval(push(), 3000)
+})
+
+// 客流密度ws
+envMonitor.on('connection', (ws) => {
+  let envTimer = null
+  ws.on('message', (message) => {
+    console.log('envMonitor received: %s', message)
+    const type = parseInt(JSON.parse(message)?.FuncType)
+    console.log(type)
+    if (type == 0) {
+      const place = Random.natural(7, 14)
+      const sendMsg = () => {
+        let res = {
+          rtYcNum: place,
+          data: []
+        }
+        for (let index = 0; index <= place; index++) {
+          const obj = Mock.mock({
+            monitorEnvDevId: sxlList[index],
+            'envNameTypeDesc|1': ['温度', '湿度', 'CO₂', 'SO₂', 'PM10', 'PM2.5'],
+            envNameTypeUnit: '℃',
+            monitorYcValue: Random.natural(0, 1000)
+          })
+          res.data.push(obj)
+        }
+        res = JSON.stringify(res)
+        console.log(res)
+        ws.send(res, (err) => {
+          if (err) {
+            clearInterval(envTimer)
+            ws.close()
+          }
+        })
+      }
+      sendMsg()
+      envTimer = setInterval(sendMsg, 4000)
+    } else {
+      if (envTimer) {
+        clearInterval(envTimer)
+      }
+    }
+  })
 })
