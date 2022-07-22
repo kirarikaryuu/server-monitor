@@ -8,7 +8,7 @@ const wsEnv = new WebSocket.Server({ port: 9483 })
 const inoutEnv = new WebSocket.Server({ port: 9485 })
 const alarm = new WebSocket.Server({ port: 9489 })
 const patrol = new WebSocket.Server({ port: 9487 })
-const envMonitor = new WebSocket.Server({ port: 9488 })
+const envMonitor = new WebSocket.Server({ port: 9490 })
 
 // #define JASON_MONITORENV_DATANUM "monitorEnvAreaNum"
 // #define JASON_MONITORENV_ENVAREATYPEID "envAreaTypeID"
