@@ -504,7 +504,7 @@ patrol.on('connection', (ws) => {
     }
   })
   //推送
-  const push = () => {
+  const patrolPush = () => {
     console.log('自动巡检push')
     const id = [1, 2]
     const name = ['巡检1号', '巡检2号']
@@ -521,8 +521,28 @@ patrol.on('connection', (ws) => {
       }
     })
   }
+  const planPush = () => {
+    console.log('应急预案push')
+    let res = Mock.mock({
+      emgPlanData: {
+        emgPlanId: 1,
+        emgPlanDesc: '应急预案描述' + 1,
+        emgPlanType: '应急预案类型' + 1,
+        emgPlanInfo: '应急预案内容' + 1,
+        cameraGrp: [1, 2, 3, 4, 5]
+      }
+    })
+    res = JSON.stringify(res)
+    ws.send(res, (err) => {
+      if (err) {
+        // if (patrolTimer) clearInterval(patrolTimer)
+        ws.close()
+      }
+    })
+  }
   setTimeout(() => {
-    push()
+    patrolPush()
+    planPush()
   }, 6000)
   // const patrolTimer = setInterval(push(), 3000)
 })
@@ -560,7 +580,7 @@ envMonitor.on('connection', (ws) => {
         })
       }
       sendMsg()
-      envTimer = setInterval(sendMsg, 4000)
+      // envTimer = setInterval(sendMsg, 4000)
     } else {
       if (envTimer) {
         clearInterval(envTimer)
