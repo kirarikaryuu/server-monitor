@@ -3,9 +3,12 @@ const Mock = require('mockjs')
 const sxlList = require('./data')
 
 const Random = Mock.Random
+const wsPublic = new WebSocket.Server({ port: 9492 })
+
 const wsFlow = new WebSocket.Server({ port: 9484 })
 const wsEnv = new WebSocket.Server({ port: 9483 })
 const inoutEnv = new WebSocket.Server({ port: 9485 })
+
 const alarm = new WebSocket.Server({ port: 9489 })
 const patrol = new WebSocket.Server({ port: 9487 })
 const envMonitor = new WebSocket.Server({ port: 9490 })
@@ -26,6 +29,280 @@ const guid = () => {
     return v.toString(16)
   })
 }
+
+// 综合看板ws
+wsPublic.on('connection', (ws) => {
+  // 客流密度ws
+  const flow = () => {
+    const place = Random.natural(7, 14)
+    let res = {
+      paxMonitorData: []
+    }
+    for (let index = 1; index <= place; index++) {
+      const obj = {
+        monitorAreaDesc: '位置' + index,
+        monitorAreaID: index,
+        monitorYcValue: Random.natural(0, 1000),
+        areaDisplayRange: Random.natural(1, 80),
+        paxVolumeWarn: 60,
+        paxVolumeAlarm: 80,
+        position: Mock.mock({
+          x: Random.natural(-900, -7500),
+          'y|1': [11223, 9700],
+          z: Random.natural(-12000, -25000)
+        })
+      }
+      res.paxMonitorData.push(obj)
+    }
+    res = JSON.stringify(res)
+    ws.send(res)
+
+    //推送变化值
+    const flowTimer = setInterval(() => {
+      let num = Random.natural(1, place)
+      let res = {
+        paxMonitorData: [
+          {
+            monitorAreaDesc: '位置' + num,
+            monitorAreaID: num,
+            monitorYcValue: Random.natural(0, 1000),
+            areaDisplayRange: Random.natural(1, 80),
+            paxVolumeWarn: 60,
+            paxVolumeAlarm: 80,
+            position: Mock.mock({
+              x: Random.natural(-900, -7500),
+              'y|1': [11223, 9700],
+              z: Random.natural(-12000, -25000)
+            })
+          }
+        ]
+      }
+      res = JSON.stringify(res)
+      // console.log(res)
+      ws.send(res, (err) => {
+        if (err) {
+          clearInterval(flowTimer)
+          ws.close()
+        }
+      })
+    }, 1000)
+  }
+  flow()
+
+  // 环境监测ws
+  const env = () => {
+    // 环境监测
+    let res = {
+      envMonitorData: [
+        {
+          envAreaTypeID: 0,
+          envAreaTypeDesc: '站厅',
+          monitorType: [
+            {
+              envNameTypeID: 0,
+              envNameTypeDesc: '温度',
+              envNameTypeUnit: '℃'
+            },
+            {
+              envNameTypeID: 1,
+              envNameTypeDesc: '湿度',
+              envNameTypeUnit: '%'
+            },
+            {
+              envNameTypeID: 2,
+              envNameTypeDesc: 'PM2.5',
+              envNameTypeUnit: 'ppm'
+            },
+            {
+              envNameTypeID: 3,
+              envNameTypeDesc: 'PM10',
+              envNameTypeUnit: 'ppm'
+            },
+            {
+              envNameTypeID: 4,
+              envNameTypeDesc: 'SO₂',
+              envNameTypeUnit: 'ppm'
+            },
+            {
+              envNameTypeID: 5,
+              envNameTypeDesc: 'CO₂',
+              envNameTypeUnit: 'ppm'
+            }
+          ]
+        },
+        {
+          envAreaTypeID: 1,
+          envAreaTypeDesc: '站台',
+          monitorType: [
+            {
+              envNameTypeID: 0,
+              envNameTypeDesc: '温度',
+              envNameTypeUnit: '℃'
+            },
+            {
+              envNameTypeID: 1,
+              envNameTypeDesc: '湿度',
+              envNameTypeUnit: '%'
+            },
+            {
+              envNameTypeID: 2,
+              envNameTypeDesc: 'PM2.5',
+              envNameTypeUnit: 'ppm'
+            },
+            {
+              envNameTypeID: 3,
+              envNameTypeDesc: 'PM10',
+              envNameTypeUnit: 'ppm'
+            },
+            {
+              envNameTypeID: 4,
+              envNameTypeDesc: 'SO₂',
+              envNameTypeUnit: 'ppm'
+            },
+            {
+              envNameTypeID: 5,
+              envNameTypeDesc: 'CO₂',
+              envNameTypeUnit: 'ppm'
+            }
+          ]
+        }
+      ]
+    }
+    res = JSON.stringify(res)
+    ws.send(res)
+    ws.on('message', (message) => {
+      console.log('env received: %s', message)
+    })
+    const send = () => {
+      let res = {
+        envMonitorRtData: [
+          {
+            envAreaTypeID: 1, //0:站台,1:站厅
+            envNameTypeID: 0,
+            monitorYcValue: Random.natural(-20, 40)
+          },
+          {
+            envAreaTypeID: 1,
+            envNameTypeID: 1,
+            monitorYcValue: Random.natural(0, 100)
+          },
+          {
+            envAreaTypeID: 1,
+            envNameTypeID: 2,
+            monitorYcValue: Random.natural(100, 1000)
+          },
+          {
+            envAreaTypeID: 1,
+            envNameTypeID: 3,
+            monitorYcValue: Random.natural(100, 1000)
+          },
+          {
+            envAreaTypeID: 1,
+            envNameTypeID: 4,
+            monitorYcValue: Random.natural(100, 1000)
+          },
+          {
+            envAreaTypeID: 1,
+            envNameTypeID: 5,
+            monitorYcValue: Random.natural(100, 1000)
+          },
+          {
+            envAreaTypeID: 0,
+            envNameTypeID: 0,
+            monitorYcValue: Random.natural(-20, 40)
+          },
+          {
+            envAreaTypeID: 0,
+            envNameTypeID: 1,
+            monitorYcValue: Random.natural(0, 100)
+          },
+          {
+            envAreaTypeID: 0,
+            envNameTypeID: 2,
+            monitorYcValue: Random.natural(100, 1000)
+          },
+          {
+            envAreaTypeID: 0,
+            envNameTypeID: 3,
+            monitorYcValue: Random.natural(100, 1000)
+          },
+          {
+            envAreaTypeID: 0,
+            envNameTypeID: 4,
+            monitorYcValue: Random.natural(100, 1000)
+          },
+          {
+            envAreaTypeID: 0,
+            envNameTypeID: 5,
+            monitorYcValue: Random.natural(100, 1000)
+          }
+        ]
+      }
+      res = JSON.stringify(res)
+      ws.send(res, (err) => {
+        // console.log(envTimer)
+        if (err) {
+          if (envTimer) {
+            clearInterval(envTimer)
+          }
+          ws.close()
+        }
+      })
+    }
+    send()
+    // //推送变化值
+    const envTimer = setInterval(send, 4000)
+  }
+  env()
+
+  // 客流趋势ws
+  const inout = () => {
+    const place = Random.natural(7, 9)
+    let res = {
+      paxTrendData: []
+    }
+    for (let index = 0; index < place; index++) {
+      const half = index % 2
+      let hour = Math.floor(index / 2) + 6
+      if (hour < 10) {
+        hour = '0' + hour
+      }
+      let time
+      if (half === 1) {
+        time = `${hour}:30`
+      } else {
+        time = `${hour}:00`
+      }
+      const obj = {
+        recordTime: time,
+        inboardPassNum: Random.natural(0, 1000),
+        outboardPassNum: Random.natural(0, 1000)
+      }
+      res.paxTrendData.push(obj)
+    }
+    ws.send(JSON.stringify(res))
+    ws.on('message', (message) => {
+      // console.log('flow received: %s', message)
+    })
+    //推送变化值
+    const inoutTimer = setInterval(() => {
+      let obj = {
+        recordTime: Random.time('HH:mm'),
+        inboardPassNum: Random.natural(0, 1000),
+        outboardPassNum: Random.natural(0, 1000)
+      }
+      res.paxTrendData.push(obj)
+      // console.log(res)
+      ws.send(JSON.stringify(res), (err) => {
+        if (err) {
+          clearInterval(inoutTimer)
+          ws.close()
+        }
+      })
+    }, 6000)
+  }
+  inout()
+})
 
 // 客流密度ws
 wsFlow.on('connection', (ws) => {
@@ -544,7 +821,9 @@ patrol.on('connection', (ws) => {
     patrolPush()
     planPush()
   }, 6000)
-  // const patrolTimer = setInterval(push(), 3000)
+  // const patrolTimer = setInterval(() => {
+  //   planPush()
+  // }, 10000)
 })
 
 // 客流密度ws
