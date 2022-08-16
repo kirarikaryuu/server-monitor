@@ -13,6 +13,8 @@ const alarm = new WebSocket.Server({ port: 9489 })
 const patrol = new WebSocket.Server({ port: 9487 })
 const envMonitor = new WebSocket.Server({ port: 9490 })
 
+const testUnity = new WebSocket.Server({ port: 9998 })
+
 // #define JASON_MONITORENV_DATANUM "monitorEnvAreaNum"
 // #define JASON_MONITORENV_ENVAREATYPEID "envAreaTypeID"
 // #define JASON_MONITORENV_ENVAREATYPEDESC "envAreaTypeDesc"
@@ -866,4 +868,143 @@ envMonitor.on('connection', (ws) => {
       }
     }
   })
+})
+
+// 报警
+// deleteAlarmData
+// updateAlarmData
+// addAlarmData
+// initAlarmData
+testUnity.on('connection', (ws) => {
+  const devArr = ['闸机1', '闸机2', '闸机3', '闸机4']
+  let count = Random.natural(3)
+  let res = {
+    initAlarmData: []
+  }
+  for (let index = 0; index < count; index++) {
+    const obj = Mock.mock({
+      alarmId: index,
+      // ymd: Random.date('yyyy-MM-dd'),
+      // hmsms: Random.time(),
+      ymd: Random.date('yyyyMMdd'),
+      hmsms: 162412333,
+      alarmlevel: Random.natural(1, 3),
+      'alarmstate|1': [1, 2, 3, 4, 5], //报警、事故、恢复、已确认
+      tonetimes: '语音报警次数', //暂时未用到
+      equipmentid: 1111,
+      station_desc: '渌水道站',
+      'system_name|1': ['FAS', 'AFC', 'CCTV'],
+      'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
+      member_name0: '成员名', //暂时未用到
+      char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
+      tone_info: '事件语音内容', //暂时未用到
+      'cameraGrp|0-4': [0] //摄像机组名
+    })
+
+    res.initAlarmData.push(obj)
+  }
+  ws.send(JSON.stringify(res))
+  ws.on('message', (message) => {
+    console.log('alarm received: %s', message)
+    // 更新
+    if (JSON.parse(message).alarmIdlist) {
+      const idList = JSON.parse(message).alarmIdlist
+      idList.forEach((val) => {
+        let updateIndex = res.initAlarmData.findIndex((data) => data.equipmentid === val)
+        let updateObj = res.initAlarmData[updateIndex]
+        updateObj.alarmstate = 5
+        let update = {
+          updateAlarmData: [updateObj]
+        }
+        ws.send(JSON.stringify(update), (err) => {
+          if (err) {
+            ws.close()
+          }
+        })
+      })
+    }
+  })
+  // //推送变化值
+  // try {
+  //   const alarmTimer = setInterval(() => {
+  //     if (count < sxlList.length) count++
+  //     // 新增
+  //     let add = {
+  //       addAlarmData: Mock.mock({
+  //         alarmId: count,
+  //         ymd: Random.date('yyyyMMdd'),
+  //         hmsms: 162412333,
+  //         alarmlevel: Random.natural(1, 3),
+  //         'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
+  //         tonetimes: '语音报警次数', //暂时未用到
+  //         equipmentid: sxlList[count] + '',
+  //         station_desc: '渌水道站',
+  //         'system_name|1': ['FAS', 'AFC', 'CCTV'],
+  //         'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
+  //         member_name0: '成员名', //暂时未用到
+  //         char_info: '宇视系统IABA:109VC渌水道-上行尾' + count,
+  //         tone_info: '事件语音内容', //暂时未用到
+  //         'cameraGrp|0-4': [0] //摄像机组名
+  //       })
+  //     }
+  //     // console.log(res)
+  //     res.initAlarmData.push(add.addAlarmData)
+  //     ws.send(JSON.stringify(add), (err) => {
+  //       if (err) {
+  //         clearInterval(alarmTimer)
+  //         ws.close()
+  //       }
+  //     })
+  //     // 更新
+  //     let updateIndex = Random.natural(0, res.initAlarmData.length - 1)
+  //     let updateObj = res.initAlarmData[updateIndex]
+  //     updateObj.char_info = '更新了' + count
+  //     let update = {
+  //       updateAlarmData: updateObj
+  //     }
+  //     ws.send(JSON.stringify(update), (err) => {
+  //       if (err) {
+  //         clearInterval(alarmTimer)
+  //         ws.close()
+  //       }
+  //     })
+  //     // 删除
+  //     let delIndex = Random.natural(0, res.initAlarmData.length - 1)
+  //     let del = {
+  //       deleteAlarmData: res.initAlarmData[delIndex]
+  //     }
+  //     res.initAlarmData.splice(delIndex, 1)
+  //     ws.send(JSON.stringify(del), (err) => {
+  //       if (err) {
+  //         clearInterval(alarmTimer)
+  //         ws.close()
+  //       }
+  //     })
+  //     // 事件
+  //     let event = {
+  //       EventData: [
+  //         Mock.mock({
+  //           ymd: Random.date('yyyyMMdd'),
+  //           hmsms: 162412333,
+  //           alarmlevel: Random.natural(0, 3),
+  //           'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
+  //           tonetimes: '语音报警次数', //暂时未用到
+  //           station_desc: '渌水道站',
+  //           'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
+  //           member_name0: '成员名', //暂时未用到
+  //           char_info: '电伴热DBR_s_032号回路系统运行/停止状态',
+  //           tone_info: '事件语音内容' //暂时未用到
+  //         })
+  //       ]
+  //     }
+  //     ws.send(JSON.stringify(event), (err) => {
+  //       if (err) {
+  //         clearInterval(alarmTimer)
+  //         ws.close()
+  //       }
+  //     })
+  //   }, 5000)
+  // } catch (error) {
+  //   console.log(error)
+  // }
 })
