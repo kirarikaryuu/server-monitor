@@ -741,8 +741,9 @@ patrol.on('connection', (ws) => {
     const res = JSON.parse(message)
     if (res && res.RegCommand == 2) {
       const obj = Mock.mock({
+        devId: res.RegDevId,
         devYxInfo: [],
-        'cameraGrp|1': [[1], [1, 2]]
+        'cameraGrp|1': [[], [1]]
       })
       const count = Random.natural(1, 3)
       // const count = 1
