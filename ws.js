@@ -1,6 +1,49 @@
 const WebSocket = require('ws') //引入模块
 const Mock = require('mockjs')
 const sxlList = require('./data')
+// 海康sdk
+const Hikopenapi = require('hikopenapi-node')
+const Koa = require('koa')
+const Router = require('koa-router')
+
+const app = new Koa()
+const router = new Router()
+
+const getUrl = () => {
+  return new Promise(async (resolve) => {
+    // const requestUrl = 'https://123.123.123.123:443/artemis/api/video/v1/cameras/previewURLs'
+    const requestUrl = 'https://192.168.10.70:443/artemis/api/video/v2/cameras/previewURLs'
+    // const requestUrl = 'https://192.168.10.70:443/api/video/v2/cameras/previewURLs'
+    const headers = { 'content-type': 'application/json', accept: 'application/json' }
+    const body = JSON.stringify({
+      cameraIndexCode: '0b438f15c7754a788ec3cdc239f6be17',
+      streamType: 0,
+      protocol: 'rtsp',
+      transmode: 0,
+      expand: 'transcode=0'
+    })
+    const timeout = 15
+    const appKey = '27568725'
+    const appSecret = 'tWGt6G45vAPaAFX1CUrb'
+    const res = await Hikopenapi.httpPost(requestUrl, headers, body, appKey, appSecret, timeout)
+    setTimeout(() => {
+      resolve(res)
+    }, 1000)
+  })
+}
+
+//路由拦截
+router.get('/getUrl', async (ctx) => {
+  const result = await getUrl()
+  console.log(JSON.parse(result))
+  let buff = new Buffer(JSON.parse(result).data, 'base64')
+  let text = buff.toString('ascii')
+  console.log(text)
+  ctx.body = text
+})
+
+app.use(router.routes()).use(router.allowedMethods()) //把前面所有定义的方法添加到app应用上去
+app.listen(4396)
 
 const Random = Mock.Random
 const wsPublic = new WebSocket.Server({ port: 9492 })
@@ -741,8 +784,8 @@ patrol.on('connection', (ws) => {
     const res = JSON.parse(message)
     if (res && res.RegCommand == 2) {
       const obj = Mock.mock({
-        devId: res.RegDevId,
         devYxInfo: [],
+        devId: res.RegDevId,
         'cameraGrp|1': [[], [1]]
       })
       const count = Random.natural(1, 3)

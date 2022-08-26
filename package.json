@@ -12,7 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "grpc-mock": "^0.7.0",
+    "hikopenapi-node": "^1.1.0",
     "koa": "^2.13.4",
+    "koa-router": "^12.0.0",
     "mockjs": "^1.1.0",
     "ws": "^8.5.0"
   }
