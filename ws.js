@@ -9,32 +9,43 @@ const Router = require('koa-router')
 const app = new Koa()
 const router = new Router()
 
-const getUrl = () => {
+// ws 0x01730f00
+const getUrl = (type) => {
   return new Promise(async (resolve) => {
     // const requestUrl = 'https://123.123.123.123:443/artemis/api/video/v1/cameras/previewURLs'
-    const requestUrl = 'https://192.168.10.70:443/artemis/api/video/v2/cameras/previewURLs'
+    const baseUrl = 'https://192.168.10.70:443'
+    const requestUrl = '/artemis/api/video/v2/cameras/previewURLs'
+    const requestUrl2 = '/artemis/api/resource/v1/cameras'
     // const requestUrl = 'https://192.168.10.70:443/api/video/v2/cameras/previewURLs'
     const headers = { 'content-type': 'application/json', accept: 'application/json' }
     const body = JSON.stringify({
       cameraIndexCode: '0b438f15c7754a788ec3cdc239f6be17',
       streamType: 0,
-      protocol: 'rtsp',
+      protocol: type,
       transmode: 0,
       expand: 'transcode=0'
     })
     const timeout = 15
     const appKey = '27568725'
     const appSecret = 'tWGt6G45vAPaAFX1CUrb'
-    const res = await Hikopenapi.httpPost(requestUrl, headers, body, appKey, appSecret, timeout)
-    setTimeout(() => {
-      resolve(res)
-    }, 1000)
+    const res = await Hikopenapi.httpPost(baseUrl + requestUrl, headers, body, appKey, appSecret, timeout)
+    resolve(res)
   })
 }
 
 //路由拦截
-router.get('/getUrl', async (ctx) => {
-  const result = await getUrl()
+router.get('/getWsUrl', async (ctx) => {
+  const result = await getUrl('ws')
+  console.log(JSON.parse(result))
+  let buff = new Buffer(JSON.parse(result).data, 'base64')
+  let text = buff.toString('ascii')
+  console.log(text)
+  ctx.body = text
+})
+
+//路由拦截
+router.get('/getHlsUrl', async (ctx) => {
+  const result = await getUrl('hls')
   console.log(JSON.parse(result))
   let buff = new Buffer(JSON.parse(result).data, 'base64')
   let text = buff.toString('ascii')
