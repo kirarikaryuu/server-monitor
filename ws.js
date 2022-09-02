@@ -9,7 +9,7 @@ const Router = require('koa-router')
 const app = new Koa()
 const router = new Router()
 
-// ws 0x01730f00
+// get stream
 const getUrl = (type) => {
   return new Promise(async (resolve) => {
     // const requestUrl = 'https://123.123.123.123:443/artemis/api/video/v1/cameras/previewURLs'
@@ -22,8 +22,8 @@ const getUrl = (type) => {
       cameraIndexCode: '0b438f15c7754a788ec3cdc239f6be17',
       streamType: 0,
       protocol: type,
-      transmode: 0,
-      expand: 'transcode=0'
+      transmode: 1,
+      expand: 'streamform=rtp&transcode=1&videotype=h264'
     })
     const timeout = 15
     const appKey = '27568725'
@@ -33,7 +33,7 @@ const getUrl = (type) => {
   })
 }
 
-//路由拦截
+//ws
 router.get('/getWsUrl', async (ctx) => {
   const result = await getUrl('ws')
   console.log(JSON.parse(result))
@@ -43,7 +43,17 @@ router.get('/getWsUrl', async (ctx) => {
   ctx.body = text
 })
 
-//路由拦截
+//rtsp
+router.get('/getRtspUrl', async (ctx) => {
+  const result = await getUrl('rtsp')
+  console.log(JSON.parse(result))
+  let buff = new Buffer(JSON.parse(result).data, 'base64')
+  let text = buff.toString('ascii')
+  console.log(text)
+  ctx.body = text
+})
+
+//hls
 router.get('/getHlsUrl', async (ctx) => {
   const result = await getUrl('hls')
   console.log(JSON.parse(result))
