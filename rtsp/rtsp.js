@@ -1,10 +1,10 @@
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg') // 自动为当前node服务所在的系统安装ffmpeg
 const ffmpeg = require('fluent-ffmpeg')
 const express = require('express')
 const webSocketStream = require('websocket-stream/stream')
 const expressWebSocket = require('express-ws')
 
-ffmpeg.setFfmpegPath(ffmpegPath.path)
+// ffmpeg.setFfmpegPath(ffmpegPath.path)
+ffmpeg.setFfmpegPath('D:/code/ffmpeg/bin/ffmpeg')
 
 /**
  * 创建一个后端服务
@@ -42,7 +42,7 @@ function rtspToFlvHandle(ws, req) {
       browserBufferTimeout: 1000000
     }
   )
-  // const url = req.query.url;
+  // const url = req.query.url
   const url = new Buffer(req.query.url, 'base64').toString() // 前端对rtsp url进行了base64编码，此处进行解码
   console.log('rtsp url:', url)
   try {
@@ -68,7 +68,7 @@ function rtspToFlvHandle(ws, req) {
       })
       .addOutputOption(
         '-threads',
-        '4', // 一些降低延迟的配置参数
+        '5', // 一些降低延迟的配置参数
         '-tune',
         'zerolatency',
         '-preset',
@@ -76,7 +76,7 @@ function rtspToFlvHandle(ws, req) {
       )
       .outputFormat('flv') // 转换为flv格式
       .videoCodec('libx264') // ffmpeg无法直接将h265转换为flv的，故需要先将h265转换为h264，然后再转换为flv
-      .withSize('50%') // 转换之后的视频分辨率原来的50%, 如果转换出来的视频仍然延迟高，可按照文档上面的描述，自行降低分辨率
+      .withSize('500x?') // 转换之后的视频分辨率原来的50%, 如果转换出来的视频仍然延迟高，可按照文档上面的描述，自行降低分辨率
       .noAudio() // 去除声音
       .pipe(stream)
   } catch (error) {
