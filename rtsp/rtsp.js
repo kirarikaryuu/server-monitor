@@ -31,7 +31,7 @@ function createServer() {
  * @param ws
  * @param req
  */
-function rtspToFlvHandle(ws, req) {
+const rtspToFlvHandle = (ws, req) => {
   const stream = webSocketStream(
     ws,
     {
@@ -42,9 +42,14 @@ function rtspToFlvHandle(ws, req) {
       browserBufferTimeout: 1000000
     }
   )
+  ws.on('message', (msg) => {
+    console.log(`receive message ${msg}`)
+    ws.send('default response')
+  })
   // const url = req.query.url
   const url = new Buffer(req.query.url, 'base64').toString() // 前端对rtsp url进行了base64编码，此处进行解码
-  console.log('rtsp url:', url)
+  console.log('rtsp url:', req.query.url)
+  console.log('rtsp base64 url:', url)
   try {
     ffmpeg(url)
       .addInputOption('-rtsp_transport', 'tcp', '-buffer_size', '102400')
@@ -56,7 +61,7 @@ function rtspToFlvHandle(ws, req) {
         console.log(data, '转码中......')
       })
       .on('progress', function (progress) {
-        // console.log(progress,'转码进度')
+        // console.log(progress, '转码进度')
       })
       .on('error', function (err, a, b) {
         console.log(url, '转码 错误: ', err.message)
@@ -76,7 +81,7 @@ function rtspToFlvHandle(ws, req) {
       )
       .outputFormat('flv') // 转换为flv格式
       .videoCodec('libx264') // ffmpeg无法直接将h265转换为flv的，故需要先将h265转换为h264，然后再转换为flv
-      .withSize('500x?') // 转换之后的视频分辨率原来的50%, 如果转换出来的视频仍然延迟高，可按照文档上面的描述，自行降低分辨率
+      .withSize('400x?') // 转换之后的视频分辨率原来的50%, 如果转换出来的视频仍然延迟高，可按照文档上面的描述，自行降低分辨率
       .noAudio() // 去除声音
       .pipe(stream)
   } catch (error) {

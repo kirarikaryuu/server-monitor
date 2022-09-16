@@ -77,6 +77,8 @@ const alarm = new WebSocket.Server({ port: 9489 })
 const patrol = new WebSocket.Server({ port: 9487 })
 const envMonitor = new WebSocket.Server({ port: 9490 })
 
+const energyWs = new WebSocket.Server({ port: 9493 })
+
 const testUnity = new WebSocket.Server({ port: 32131 })
 
 // #define JASON_MONITORENV_DATANUM "monitorEnvAreaNum"
@@ -987,4 +989,44 @@ testUnity.on('connection', (ws) => {
       })
     }
   })
+})
+
+// 风水联动ws
+energyWs.on('connection', (ws) => {
+  const res = {
+    paxTrendData: [],
+    envTrendData: [],
+    fengJiTrendData: []
+  }
+
+  ws.send(JSON.stringify(res))
+
+  //推送变化值
+  const flowTimer = setInterval(() => {
+    res.paxTrendData.push({
+      recordTime: Random.time('HH:mm:ss'),
+      inBoardPassNum: Random.natural(0, 800),
+      outBoardPassNum: Random.natural(0, 800)
+    })
+    res.envTrendData.push({
+      recordTime: Random.time('HH:mm:ss'),
+      zhanTingTemp: Random.natural(10, 30),
+      zhanTaiTemp: Random.natural(10, 30),
+      zhanTingHum: Random.natural(10, 100),
+      zhanTaiHum: Random.natural(10, 100)
+    })
+    res.fengJiTrendData.push({
+      recordTime: Random.time('HH:mm:ss'),
+      fengJiData: Random.natural(0, 800)
+    })
+
+    const data = JSON.stringify(res)
+    // console.log(data)
+    ws.send(data, (err) => {
+      if (err) {
+        clearInterval(flowTimer)
+        ws.close()
+      }
+    })
+  }, 3000)
 })
