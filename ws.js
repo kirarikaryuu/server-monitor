@@ -993,32 +993,67 @@ testUnity.on('connection', (ws) => {
 
 // 风水联动ws
 energyWs.on('connection', (ws) => {
+  const list = [
+    {
+      energyTypeID: 3,
+      energyTypeDesc: '风机',
+      energyRatioValue: 2.0
+    },
+    {
+      energyTypeID: 4,
+      energyTypeDesc: '空气处理器',
+      energyRatioValue: 4.0
+    },
+    {
+      energyTypeID: 0,
+      energyTypeDesc: '冷水机组',
+      energyRatioValue: 2.0
+    },
+    {
+      energyTypeID: 1,
+      energyTypeDesc: '冷却泵',
+      energyRatioValue: 5.0
+    },
+    {
+      energyTypeID: 2,
+      energyTypeDesc: '冷却塔',
+      energyRatioValue: 7.0
+    }
+  ]
   const res = {
     paxTrendData: [],
     envTrendData: [],
-    fengJiTrendData: []
+    fengJiTrendData: [],
+    energyRatioData: []
   }
 
   ws.send(JSON.stringify(res))
 
-  //推送变化值
-  const flowTimer = setInterval(() => {
+  const dataPush = () => {
     res.paxTrendData.push({
-      recordTime: Random.time('HH:mm:ss'),
+      recordTime: Random.time('HH:mm'),
       inBoardPassNum: Random.natural(0, 800),
       outBoardPassNum: Random.natural(0, 800)
     })
     res.envTrendData.push({
-      recordTime: Random.time('HH:mm:ss'),
+      recordTime: Random.time('HH:mm'),
       zhanTingTemp: Random.natural(10, 30),
       zhanTaiTemp: Random.natural(10, 30),
       zhanTingHum: Random.natural(10, 100),
       zhanTaiHum: Random.natural(10, 100)
     })
     res.fengJiTrendData.push({
-      recordTime: Random.time('HH:mm:ss'),
+      recordTime: Random.time('HH:mm'),
       fengJiData: Random.natural(0, 800)
     })
+    if (res.energyRatioData.length === 0) {
+      res.energyRatioData = list
+    } else {
+      res.energyRatioData = []
+      const index = Random.natural(0, list.length - 1)
+      list[index].energyRatioValue += 1
+      res.energyRatioData.push(list[index])
+    }
 
     const data = JSON.stringify(res)
     // console.log(data)
@@ -1028,5 +1063,8 @@ energyWs.on('connection', (ws) => {
         ws.close()
       }
     })
-  }, 3000)
+  }
+  //推送变化值
+  const flowTimer = setInterval(dataPush, 3000)
+  dataPush()
 })
