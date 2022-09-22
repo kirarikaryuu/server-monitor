@@ -16,6 +16,7 @@ function createServer() {
     perMessageDeflate: true
   })
   app.ws('/rtsp/', rtspToFlvHandle)
+  app.ws('/rtsp2/', sendToUnity)
 
   app.get('/', (req, response) => {
     response.send('当你看到这个页面的时候说明rtsp流媒体服务正常启动中......')
@@ -88,5 +89,29 @@ const rtspToFlvHandle = (ws, req) => {
     console.log('抛出异常', error)
   }
 }
-
+const sendToUnity = () => {
+  const url = new Buffer(req.query.url, 'base64').toString() // 前端对rtsp url进行了base64编码，此处进行解码
+  console.log('rtsp url:', req.query.url)
+  console.log('rtsp base64 url:', url)
+  const ffmpegStream = ffmpeg(url)
+    .noAudio()
+    .videoCodec('libx264')
+    .format('flv')
+    .on('error', function (error) {
+      console.log('error ffmpeg', error)
+    })
+    .on('end', function () {
+      console.log('exchanged end ffmpeg')
+      // res.end();
+    })
+    .pipe()
+  ffmpegStream
+    .on('data', (chunk) => {
+      console.log(chunk.length, chunk)
+      ws.send(chunk)
+    })
+    .on('end', () => {
+      console.log('ffmpeg pipe end')
+    })
+}
 createServer()
