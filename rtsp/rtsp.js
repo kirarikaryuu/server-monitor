@@ -6,6 +6,16 @@ const expressWebSocket = require('express-ws')
 // ffmpeg.setFfmpegPath(ffmpegPath.path)
 ffmpeg.setFfmpegPath('D:/code/ffmpeg/bin/ffmpeg')
 
+// ffmpeg.getAvailableFormats(function (err, formats) {
+//   console.log('Available formats:')
+//   console.dir(formats)
+// })
+
+// ffmpeg.getAvailableEncoders(function (err, encoders) {
+//   console.log('Available encoders:')
+//   console.dir(encoders)
+// })
+
 /**
  * 创建一个后端服务
  */
@@ -89,7 +99,7 @@ const rtspToFlvHandle = (ws, req) => {
     console.log('抛出异常', error)
   }
 }
-const sendToUnity = () => {
+const sendToUnity = (ws, req) => {
   const url = new Buffer(req.query.url, 'base64').toString() // 前端对rtsp url进行了base64编码，此处进行解码
   console.log('rtsp url:', req.query.url)
   console.log('rtsp base64 url:', url)
@@ -97,6 +107,14 @@ const sendToUnity = () => {
     .noAudio()
     .videoCodec('libx264')
     .format('flv')
+    .addOutputOption(
+      '-threads',
+      '5', // 一些降低延迟的配置参数
+      '-tune',
+      'zerolatency',
+      '-preset',
+      'ultrafast'
+    )
     .on('error', function (error) {
       console.log('error ffmpeg', error)
     })
@@ -104,6 +122,7 @@ const sendToUnity = () => {
       console.log('exchanged end ffmpeg')
       // res.end();
     })
+    .withSize('400x?')
     .pipe()
   ffmpegStream
     .on('data', (chunk) => {
