@@ -907,7 +907,19 @@ envMonitor.on('connection', (ws) => {
         let res = {
           data: []
         }
-        const devList = ['直梯', '楼梯1', '楼梯2', '闸机1', '闸机2', '闸机3', '闸机4', '售票机1', '售票机2', '问询处']
+        const devListUnity = [
+          '直梯',
+          '楼梯1',
+          '楼梯2',
+          '闸机1',
+          '闸机2',
+          '闸机3',
+          '闸机4',
+          '售票机1',
+          '售票机2',
+          '问询处'
+        ]
+        const devList = [2146104845, 2146128697, 2146124096, 2146124097, 2146124098]
         for (let index = 0; index < devList.length; index++) {
           const obj = Mock.mock({
             monitorEnvDevId: devList[index],
@@ -927,7 +939,7 @@ envMonitor.on('connection', (ws) => {
         })
       }
       sendMsg()
-      // envTimer = setInterval(sendMsg, 4000)
+      envTimer = setInterval(sendMsg, 4000)
     } else {
       if (envTimer) {
         clearInterval(envTimer)
