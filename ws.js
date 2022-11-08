@@ -911,18 +911,18 @@ envMonitor.on('connection', (ws) => {
           '直梯',
           '楼梯1',
           '楼梯2',
-          '闸机1',
-          '闸机2',
-          '闸机3',
-          '闸机4',
+          '闸机5',
+          '闸机6',
+          '闸机7',
+          '闸机8',
           '售票机1',
           '售票机2',
           '问询处'
         ]
         const devList = [2146104845, 2146128697, 2146124096, 2146124097, 2146124098]
-        for (let index = 0; index < devList.length; index++) {
+        for (let index = 0; index < devListUnity.length; index++) {
           const obj = Mock.mock({
-            monitorEnvDevId: devList[index],
+            monitorEnvDevId: devListUnity[index],
             'envNameTypeDesc|1': ['温度', '湿度', 'CO₂', 'SO₂', 'PM10', 'PM2.5'],
             envNameTypeUnit: '℃',
             monitorYcValue: Random.natural(0, 1000)
@@ -974,7 +974,7 @@ testUnity.on('connection', (ws) => {
       member_name0: '成员名', //暂时未用到
       char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
       tone_info: '事件语音内容', //暂时未用到
-      'cameraGrp|0-4': [0] //摄像机组名
+      'cameraGrp|0-4': [0,1] //摄像机组名
     })
 
     res.initAlarmData.push(obj)
