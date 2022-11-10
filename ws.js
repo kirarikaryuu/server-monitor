@@ -811,7 +811,7 @@ patrol.on('connection', (ws) => {
         devId: res.RegDevId,
         'cameraGrp|1': [[], [1]]
       })
-      const count = Random.natural(1, 3)
+      const count = Random.natural(2, 4)
       // const count = 1
       for (i = 0; i < count; i++) {
         const info = Mock.mock({
@@ -835,18 +835,19 @@ patrol.on('connection', (ws) => {
           devId: res.RegDevId,
           devYxInfo: []
         }
-        obj.devYxInfo.forEach((val) => {
+        obj.devYxInfo.slice(0, obj.devYxInfo.length - 1).forEach((val, key) => {
           data.devYxInfo.push(
             Mock.mock({
               devYxName: val.devYxName,
-              devYxStateDesc: '更新了',
+              devYxDesc: '描述' + key,
+              devYxStateDesc: `状态描述${key}已更新`,
               'devYxStateAlarmFlag|1': [0, 1]
             })
           )
         })
         result.data.push(data)
         ws.send(JSON.stringify(result))
-      }, 1000)
+      }, 2000)
     }
   })
   //推送
@@ -974,7 +975,7 @@ testUnity.on('connection', (ws) => {
       member_name0: '成员名', //暂时未用到
       char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
       tone_info: '事件语音内容', //暂时未用到
-      'cameraGrp|0-4': [0,1] //摄像机组名
+      'cameraGrp|0-4': [0, 1] //摄像机组名
     })
 
     res.initAlarmData.push(obj)
