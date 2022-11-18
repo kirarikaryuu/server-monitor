@@ -103,6 +103,7 @@ wsPublic.on('connection', (ws) => {
   // 客流密度ws
   const flow = () => {
     const place = Random.natural(7, 14)
+    // const place = 2
     let res = {
       paxMonitorData: []
     }
@@ -110,15 +111,16 @@ wsPublic.on('connection', (ws) => {
       const obj = {
         monitorAreaDesc: '位置' + index,
         monitorAreaID: index,
-        monitorYcValue: Random.natural(0, 1000),
-        areaDisplayRange: Random.natural(1, 80),
+        monitorYcValue: Random.natural(0, 200),
+        areaDisplayRange: Random.natural(1, 200),
         paxVolumeWarn: 60,
         paxVolumeAlarm: 80,
         position: Mock.mock({
-          x: Random.float(-1, 1, 14, 14),
+          x: Random.float(-3, -1, 2, 2),
           y: 0,
-          z: Random.float(-1, 0, 14, 14)
-        })
+          z: Random.float(-3, -2, 2, 2)
+        }),
+        Floor: '站厅层',
       }
       res.paxMonitorData.push(obj)
     }
@@ -133,15 +135,16 @@ wsPublic.on('connection', (ws) => {
           {
             monitorAreaDesc: '位置' + num,
             monitorAreaID: num,
-            monitorYcValue: Random.natural(0, 1000),
-            areaDisplayRange: Random.natural(1, 80),
+            monitorYcValue: Random.natural(0, 200),
+            areaDisplayRange: Random.natural(1, 200),
             paxVolumeWarn: 60,
             paxVolumeAlarm: 80,
             position: Mock.mock({
-              x: Random.float(-1, 1, 14, 14),
+              x: Random.float(-3, -1, 2, 2),
               y: 0,
-              z: Random.float(-1, 0, 14, 14)
-            })
+              z: Random.float(-3, -2, 2, 2)
+            }),
+            Floor: '站厅层',
           }
         ]
       }
@@ -908,28 +911,232 @@ envMonitor.on('connection', (ws) => {
         let res = {
           data: []
         }
-        const devListUnity = [
-          '直梯',
-          '楼梯1',
-          '楼梯2',
-          '闸机5',
-          '闸机6',
-          '闸机7',
-          '闸机8',
-          '售票机1',
-          '售票机2',
-          '问询处'
+        // 迅维数据
+        // const devList = [2146104845, 2146128697, 2146124096, 2146124097, 2146124098]
+        // for (let index = 0; index < devList.length; index++) {
+        //   const obj = Mock.mock({
+        //     monitorEnvDevId: devList[index],
+        //     'envNameTypeDesc|1': ['温度', '湿度', 'CO₂', 'SO₂', 'PM10', 'PM2.5'],
+        //     envNameTypeUnit: '℃',
+        //     monitorYcValue: Random.natural(0, 1000)
+        //   })
+        //   res.data.push(obj)
+        // }
+        res.data = [
+          {
+            "monitorEnvDevId": "温度传感器3",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "温度",
+            "envNameTypeUnit": "℃",
+            "monitorYcValue": 30
+          },
+          {
+            "monitorEnvDevId": "温度传感器4",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "温度",
+            "envNameTypeUnit": "℃",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "湿度传感器1",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "湿度",
+            "envNameTypeUnit": "%rh",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "温度传感器2",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "温度",
+            "envNameTypeUnit": "℃",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "湿度传感器5",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "湿度",
+            "envNameTypeUnit": "%rh",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "CO2传感器1",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "CO2",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "湿度传感器3",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "湿度",
+            "envNameTypeUnit": "%rh",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "温度传感器5",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "温度",
+            "envNameTypeUnit": "℃",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "湿度传感器2",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "湿度",
+            "envNameTypeUnit": "%rh",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "温度传感器1",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "温度",
+            "envNameTypeUnit": "℃",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "湿度传感器4",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "湿度",
+            "envNameTypeUnit": "%rh",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "二氧化硫探测器2",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "SO2",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM2.5探测器5",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "PM2.5",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM2.5探测器4",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "PM2.5",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM2.5探测器3",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "PM2.5",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM10探测器6",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "PM10",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM10探测器5",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "PM10",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 40
+          },
+          {
+            "monitorEnvDevId": "PM10探测器4",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "PM10",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "二氧化硫探测器1",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "SO2",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM10探测器1",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "PM10",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "二氧化硫探测器5",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "SO2",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM2.5探测器1",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "PM2.5",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM2.5探测器2",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "PM2.5",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM10探测器3",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "PM10",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM2.5探测器7",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "PM2.5",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM10探测器2",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "PM10",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM2.5探测器6",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "PM2.5",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "PM10探测器7",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "PM10",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 600
+          },
+          {
+            "monitorEnvDevId": "二氧化硫探测器4",
+            "Floor": "8号线站台",
+            "envNameTypeDesc": "SO2",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          },
+          {
+            "monitorEnvDevId": "二氧化硫探测器3",
+            "Floor": "站厅层",
+            "envNameTypeDesc": "SO2",
+            "envNameTypeUnit": "PPM",
+            "monitorYcValue": 0
+          }
         ]
-        const devList = [2146104845, 2146128697, 2146124096, 2146124097, 2146124098]
-        for (let index = 0; index < devListUnity.length; index++) {
-          const obj = Mock.mock({
-            monitorEnvDevId: devListUnity[index],
-            'envNameTypeDesc|1': ['温度', '湿度', 'CO₂', 'SO₂', 'PM10', 'PM2.5'],
-            envNameTypeUnit: '℃',
-            monitorYcValue: Random.natural(0, 1000)
-          })
-          res.data.push(obj)
-        }
+        res.data.forEach((val, key) => {
+          val.monitorYcValue = Random.natural(0, 100)
+        })
         res = JSON.stringify(res)
         console.log(res)
         ws.send(res, (err) => {
@@ -955,7 +1162,7 @@ envMonitor.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 testUnity.on('connection', (ws) => {
-  const devArr = ['闸机2', '闸机3']
+  const devArr = ['闸机044', '闸机043']
   let count = 2
   let res = {
     initAlarmData: []
