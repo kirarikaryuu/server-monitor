@@ -1162,12 +1162,11 @@ envMonitor.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 testUnity.on('connection', (ws) => {
-  const devArr = ['闸机044', '闸机043']
-  let count = 2
+  const devArr = ['闸机044', '闸机044', '闸机044', '闸机043', '闸机043', '闸机043']
   let res = {
     initAlarmData: []
   }
-  for (let index = 0; index < count; index++) {
+  for (let index = 0; index < devArr.length; index++) {
     const obj = Mock.mock({
       alarmId: index,
       ymd: Random.date('yyyyMMdd'),
@@ -1209,6 +1208,25 @@ testUnity.on('connection', (ws) => {
       })
     }
   })
+  // //推送变化值
+  // try {
+  //   const alarmTimer = setInterval(() => {
+  //     // 删除
+  //     let delIndex = res.initAlarmData.length - 1
+  //     let del = {
+  //       deleteAlarmData: res.initAlarmData[delIndex]
+  //     }
+  //     res.initAlarmData.splice(delIndex, 1)
+  //     ws.send(JSON.stringify(del), (err) => {
+  //       if (err) {
+  //         clearInterval(alarmTimer)
+  //         ws.close()
+  //       }
+  //     })
+  //   }, 5000)
+  // } catch (error) {
+  //   console.log(error)
+  // }
 })
 
 // 风水联动ws
