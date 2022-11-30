@@ -814,7 +814,7 @@ patrol.on('connection', (ws) => {
         devId: res.RegDevId,
         'cameraGrp|1': [[], [1]]
       })
-      const count = Random.natural(2, 4)
+      const count = Random.natural(5, 9)
       // const count = 1
       for (i = 0; i < count; i++) {
         const info = Mock.mock({
