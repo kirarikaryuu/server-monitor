@@ -788,6 +788,18 @@ alarm.on('connection', (ws) => {
 
 // 自动巡检ws
 patrol.on('connection', (ws) => {
+  // 模式推送
+  setTimeout(() => {
+    const result = {
+      mode: {
+        fsldModeId: 2222,
+        zhzmModeId: 5,
+        operationModeId: 1111
+      }
+    }
+    ws.send(JSON.stringify(result))
+    console.log(result);
+  }, 2000)
   const ykObj = Mock.mock({
     devYxName: guid(),
     devYxDesc: '遥信描述',
@@ -1162,7 +1174,7 @@ envMonitor.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 testUnity.on('connection', (ws) => {
-  const devArr = ['闸机044', '闸机044', '闸机044', '闸机043', '闸机043', '闸机043']
+  const devArr = ['闸机044', '闸机043', '电梯012', '电梯011']
   let res = {
     initAlarmData: []
   }
