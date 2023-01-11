@@ -1193,7 +1193,7 @@ testUnity.on('connection', (ws) => {
       member_name0: '成员名', //暂时未用到
       char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
       tone_info: '事件语音内容', //暂时未用到
-      'cameraGrp|0-4': [0, 1] //摄像机组名
+      'cameraGrp|1': [[1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]] //摄像机组名
     })
 
     res.initAlarmData.push(obj)

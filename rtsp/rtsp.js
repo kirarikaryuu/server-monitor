@@ -92,7 +92,7 @@ const rtspToFlvHandle = (ws, req) => {
       )
       .outputFormat('flv') // 转换为flv格式
       .videoCodec('libx264') // ffmpeg无法直接将h265转换为flv的，故需要先将h265转换为h264，然后再转换为flv
-      .withSize('400x?') // 转换之后的视频分辨率原来的50%, 如果转换出来的视频仍然延迟高，可按照文档上面的描述，自行降低分辨率
+      .withSize('410x?') // 转换之后的视频分辨率原来的50%, 如果转换出来的视频仍然延迟高，可按照文档上面的描述，自行降低分辨率
       .noAudio() // 去除声音
       .pipe(stream)
   } catch (error) {
