@@ -6,4 +6,4 @@
 
 #### 启动
 
-`node ws.js`
+`npm run ws`
