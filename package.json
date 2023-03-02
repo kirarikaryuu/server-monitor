@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "dev": "node ws.js",
     "ws": "node ws.js",
     "flv": "node ./rtsp/rtsp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,6 +23,7 @@
     "koa": "^2.13.4",
     "koa-router": "^12.0.0",
     "mockjs": "^1.1.0",
+    "nacos": "^2.5.1",
     "websocket-stream": "^5.5.2",
     "ws": "^8.5.0"
   }

@@ -5,9 +5,18 @@ const sxlList = require('./data')
 const Hikopenapi = require('hikopenapi-node')
 const Koa = require('koa')
 const Router = require('koa-router')
+// nacos
+const { NacosNamingClient } = require('nacos');
 
 const app = new Koa()
 const router = new Router()
+
+// 创建 nacos 客户端实例
+const client = new NacosNamingClient({
+  logger: console,
+  serverList: '192.168.20.179:8848',
+  namespace: 'public',
+})
 
 // get stream
 const getUrl = (type) => {
@@ -63,21 +72,37 @@ router.get('/getHlsUrl', async (ctx) => {
   ctx.body = text
 })
 
+// nacos
+router.get('/nacos', async (ctx) => {
+  // subscribe instance
+  const url = new Promise((resolve) => {
+    client.subscribe('smart-alarm', (hosts) => {
+      console.log(hosts, hosts[0].ip + ':' + hosts[0].port)
+      resolve(hosts)
+    })
+  })
+  const result = await url
+  ctx.body = result
+})
+
 app.use(router.routes()).use(router.allowedMethods()) //把前面所有定义的方法添加到app应用上去
 app.listen(4396)
 
 const Random = Mock.Random
-const wsPublic = new WebSocket.Server({ port: 9492 })
+// 综合看板
+const wsPublic = new WebSocket.Server({ port: 9514 })
 
 const wsFlow = new WebSocket.Server({ port: 9484 })
 const wsEnv = new WebSocket.Server({ port: 9483 })
 const inoutEnv = new WebSocket.Server({ port: 9485 })
 
 const alarm = new WebSocket.Server({ port: 9489 })
-const patrol = new WebSocket.Server({ port: 9487 })
-const envMonitor = new WebSocket.Server({ port: 9490 })
-
-const energyWs = new WebSocket.Server({ port: 9493 })
+// 巡检实时数据
+const patrol = new WebSocket.Server({ port: 9515 })
+// 环境监测
+const envMonitor = new WebSocket.Server({ port: 9516 })
+// 风水联动的能管管理
+const energyWs = new WebSocket.Server({ port: 9518 })
 
 const testUnity = new WebSocket.Server({ port: 32131 })
 
