@@ -76,8 +76,13 @@ router.get('/getHlsUrl', async (ctx) => {
 router.get('/nacos', async (ctx) => {
   // subscribe instance
   const url = new Promise((resolve) => {
-    client.subscribe('smart-alarm', (hosts) => {
-      console.log(hosts, hosts[0].ip + ':' + hosts[0].port)
+    // 服务名
+    client.subscribe({
+      serviceName: 'smart-alarm',
+      groupName: 'DEFAULT_GROUP',
+      clusters: 'DEFAULT'
+    }, (hosts) => {
+      console.log(hosts)
       resolve(hosts)
     })
   })
@@ -89,8 +94,9 @@ app.use(router.routes()).use(router.allowedMethods()) //把前面所有定义的
 app.listen(4396)
 
 const Random = Mock.Random
-// 综合看板
-const wsPublic = new WebSocket.Server({ port: 9514 })
+// 综合看板 9492
+const wsPublic = new WebSocket.Server({ port: 9492 })
+// const wsPublic = new WebSocket.Server({ port: 9514 })
 
 const wsFlow = new WebSocket.Server({ port: 9484 })
 const wsEnv = new WebSocket.Server({ port: 9483 })
@@ -98,11 +104,14 @@ const inoutEnv = new WebSocket.Server({ port: 9485 })
 
 const alarm = new WebSocket.Server({ port: 9489 })
 // 巡检实时数据
-const patrol = new WebSocket.Server({ port: 9515 })
+// const patrol = new WebSocket.Server({ port: 9515 })
 // 环境监测
-const envMonitor = new WebSocket.Server({ port: 9516 })
+// const envMonitor = new WebSocket.Server({ port: 9516 })
 // 风水联动的能管管理
-const energyWs = new WebSocket.Server({ port: 9518 })
+// const energyWs = new WebSocket.Server({ port: 9518 })
+const patrol = new WebSocket.Server({ port: 9487 })
+const envMonitor = new WebSocket.Server({ port: 9490 })
+const energyWs = new WebSocket.Server({ port: 9493 })
 
 const testUnity = new WebSocket.Server({ port: 32131 })
 

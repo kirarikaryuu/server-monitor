@@ -17,7 +17,6 @@
     "express-ws": "^5.0.2",
     "ffmpeg-installer": "^1.0.2",
     "fluent-ffmpeg": "^2.1.2",
-    "grpc-mock": "^0.7.0",
     "hikopenapi-node": "^1.1.0",
     "http": "^0.0.1-security",
     "koa": "^2.13.4",
