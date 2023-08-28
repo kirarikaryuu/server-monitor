@@ -1,5 +1,6 @@
 const WebSocket = require('ws') //引入模块
 const Mock = require('mockjs')
+const { faker } = require('@faker-js/faker/locale/zh_CN');
 const sxlList = require('./data')
 // 海康sdk
 const Hikopenapi = require('hikopenapi-node')
@@ -98,7 +99,7 @@ app.listen(4396)
 const Random = Mock.Random
 
 // 综合看板 9492
-const wsPublic = new WebSocket.Server({ port: 9492 })
+const wsPublic = new WebSocket.Server({ port: 9484 })
 // 巡检实时数据
 const patrol = new WebSocket.Server({ port: 9487 })
 // 环境监测
@@ -115,7 +116,7 @@ const energyWs = new WebSocket.Server({ port: 9493 })
 // // 风水联动的能管管理
 // const energyWs = new WebSocket.Server({ port: 9518 })
 
-const wsFlow = new WebSocket.Server({ port: 9484 })
+// const wsFlow = new WebSocket.Server({ port: 9484 })
 const wsEnv = new WebSocket.Server({ port: 9483 })
 const inoutEnv = new WebSocket.Server({ port: 9485 })
 
@@ -144,237 +145,62 @@ const guid = () => {
 
 // 综合看板ws
 wsPublic.on('connection', (ws) => {
-  // 客流密度ws
-  const flow = () => {
-    const place = Random.natural(7, 14)
-    // const place = 2
-    let res = {
-      paxMonitorData: []
-    }
-    for (let index = 1; index <= place; index++) {
-      const obj = {
-        monitorAreaDesc: '位置' + index,
-        monitorAreaID: index,
-        monitorYcValue: Random.natural(0, 200),
-        areaDisplayRange: Random.natural(1, 200),
-        paxVolumeWarn: 60,
-        paxVolumeAlarm: 80,
-        position: Mock.mock({
-          x: Random.float(-3, -1, 2, 2),
-          y: 0,
-          z: Random.float(-3, -2, 2, 2)
-        }),
-        Floor: '站厅层',
-      }
-      res.paxMonitorData.push(obj)
-    }
-    res = JSON.stringify(res)
-    ws.send(res)
-
-    //推送变化值
-    const flowTimer = setInterval(() => {
-      let num = Random.natural(1, place)
-      let res = {
-        paxMonitorData: [
-          {
-            monitorAreaDesc: '位置' + num,
-            monitorAreaID: num,
-            monitorYcValue: Random.natural(0, 200),
-            areaDisplayRange: Random.natural(1, 200),
-            paxVolumeWarn: 60,
-            paxVolumeAlarm: 80,
-            position: Mock.mock({
-              x: Random.float(-3, -1, 2, 2),
-              y: 0,
-              z: Random.float(-3, -2, 2, 2)
-            }),
-            Floor: '站厅层',
-          }
-        ]
-      }
-      res = JSON.stringify(res)
-      // console.log(res)
-      ws.send(res, (err) => {
-        if (err) {
-          clearInterval(flowTimer)
-          ws.close()
-        }
-      })
-    }, 1000)
-  }
-  flow()
-
-  // 环境监测ws
-  const env = () => {
-    // 环境监测
-    let res = {
-      envMonitorData: [
-        {
-          envAreaTypeID: 0,
-          envAreaTypeDesc: '站厅',
-          monitorType: [
-            {
-              envNameTypeID: 0,
-              envNameTypeDesc: '温度',
-              envNameTypeUnit: '℃'
-            },
-            {
-              envNameTypeID: 1,
-              envNameTypeDesc: '湿度',
-              envNameTypeUnit: '%'
-            },
-            {
-              envNameTypeID: 2,
-              envNameTypeDesc: 'PM2.5',
-              envNameTypeUnit: 'ppm'
-            },
-            {
-              envNameTypeID: 3,
-              envNameTypeDesc: 'PM10',
-              envNameTypeUnit: 'ppm'
-            },
-            {
-              envNameTypeID: 4,
-              envNameTypeDesc: 'SO₂',
-              envNameTypeUnit: 'ppm'
-            },
-            {
-              envNameTypeID: 5,
-              envNameTypeDesc: 'CO₂',
-              envNameTypeUnit: 'ppm'
-            }
-          ]
-        },
-        {
-          envAreaTypeID: 1,
-          envAreaTypeDesc: '站台',
-          monitorType: [
-            {
-              envNameTypeID: 0,
-              envNameTypeDesc: '温度',
-              envNameTypeUnit: '℃'
-            },
-            {
-              envNameTypeID: 1,
-              envNameTypeDesc: '湿度',
-              envNameTypeUnit: '%'
-            },
-            {
-              envNameTypeID: 2,
-              envNameTypeDesc: 'PM2.5',
-              envNameTypeUnit: 'ppm'
-            },
-            {
-              envNameTypeID: 3,
-              envNameTypeDesc: 'PM10',
-              envNameTypeUnit: 'ppm'
-            },
-            {
-              envNameTypeID: 4,
-              envNameTypeDesc: 'SO₂',
-              envNameTypeUnit: 'ppm'
-            },
-            {
-              envNameTypeID: 5,
-              envNameTypeDesc: 'CO₂',
-              envNameTypeUnit: 'ppm'
-            }
-          ]
-        }
+  const staitonsFlow = () => {
+    const stationArr = Array.from({ length: 4 }, () => faker.address.streetName() + '站')
+    const data = {
+      monPaxData: [
       ]
     }
-    res = JSON.stringify(res)
-    ws.send(res)
-    ws.on('message', (message) => {
-      console.log('env received: %s', message)
+    stationArr.forEach((val) => {
+      const data1 = {
+        "monPaxStation": val,
+        "monPaxType": 0,
+        "monPaxYcValue": faker.datatype.number({ min: 50, max: 300 })
+      }
+      const data2 = {
+        "monPaxStation": val,
+        "monPaxType": 1,
+        "monPaxYcValue": faker.datatype.number({ min: 50, max: 300 })
+      }
+      data.monPaxData.push(data1, data2)
     })
-    const send = () => {
-      let res = {
-        envMonitorRtData: [
-          {
-            envAreaTypeID: 1, //0:站台,1:站厅
-            envNameTypeID: 0,
-            monitorYcValue: Random.natural(-20, 40)
-          },
-          {
-            envAreaTypeID: 1,
-            envNameTypeID: 1,
-            monitorYcValue: Random.natural(0, 100)
-          },
-          {
-            envAreaTypeID: 1,
-            envNameTypeID: 2,
-            monitorYcValue: Random.natural(100, 1000)
-          },
-          {
-            envAreaTypeID: 1,
-            envNameTypeID: 3,
-            monitorYcValue: Random.natural(100, 1000)
-          },
-          {
-            envAreaTypeID: 1,
-            envNameTypeID: 4,
-            monitorYcValue: Random.natural(100, 1000)
-          },
-          {
-            envAreaTypeID: 1,
-            envNameTypeID: 5,
-            monitorYcValue: Random.natural(100, 1000)
-          },
-          {
-            envAreaTypeID: 0,
-            envNameTypeID: 0,
-            monitorYcValue: Random.natural(-20, 40)
-          },
-          {
-            envAreaTypeID: 0,
-            envNameTypeID: 1,
-            monitorYcValue: Random.natural(0, 100)
-          },
-          {
-            envAreaTypeID: 0,
-            envNameTypeID: 2,
-            monitorYcValue: Random.natural(100, 1000)
-          },
-          {
-            envAreaTypeID: 0,
-            envNameTypeID: 3,
-            monitorYcValue: Random.natural(100, 1000)
-          },
-          {
-            envAreaTypeID: 0,
-            envNameTypeID: 4,
-            monitorYcValue: Random.natural(100, 1000)
-          },
-          {
-            envAreaTypeID: 0,
-            envNameTypeID: 5,
-            monitorYcValue: Random.natural(100, 1000)
-          }
+    ws.send(JSON.stringify(data))
+
+    //推送变化值
+    const staitonsFlowTimer = setInterval(() => {
+      const newData = {
+        monPaxData: [
         ]
       }
-      res = JSON.stringify(res)
-      ws.send(res, (err) => {
-        // console.log(envTimer)
+      const index = Random.natural(0, 1)
+      const index2 = Random.natural(2, 3)
+
+      const data1 = {
+        "monPaxStation": stationArr[index],
+        "monPaxType": Random.natural(0, 1),
+        "monPaxYcValue": faker.datatype.number({ min: 50, max: 300 })
+      }
+      const data2 = {
+        "monPaxStation": stationArr[index2],
+        "monPaxType": Random.natural(0, 1),
+        "monPaxYcValue": faker.datatype.number({ min: 50, max: 300 })
+      }
+      newData.monPaxData.push(data1, data2)
+      ws.send(JSON.stringify(newData), (err) => {
         if (err) {
-          if (envTimer) {
-            clearInterval(envTimer)
-          }
+          clearInterval(staitonsFlowTimer)
           ws.close()
         }
       })
-    }
-    send()
-    // //推送变化值
-    const envTimer = setInterval(send, 4000)
+    }, 2000)
   }
-  env()
+  staitonsFlow()
 
   // 客流趋势ws
   const inout = () => {
     const place = Random.natural(7, 9)
     let res = {
-      paxTrendData: []
+      monPaxTrend: []
     }
     for (let index = 0; index < place; index++) {
       const half = index % 2
@@ -389,11 +215,11 @@ wsPublic.on('connection', (ws) => {
         time = `${hour}:00`
       }
       const obj = {
-        recordTime: time,
-        inboardPassNum: Random.natural(0, 1000),
-        outboardPassNum: Random.natural(0, 1000)
+        monPaxRecordTime: time,
+        inboardPaxNum: Random.natural(0, 1000),
+        outboardPaxNum: Random.natural(0, 1000)
       }
-      res.paxTrendData.push(obj)
+      res.monPaxTrend.push(obj)
     }
     ws.send(JSON.stringify(res))
     ws.on('message', (message) => {
@@ -402,11 +228,11 @@ wsPublic.on('connection', (ws) => {
     //推送变化值
     const inoutTimer = setInterval(() => {
       let obj = {
-        recordTime: Random.time('HH:mm'),
-        inboardPassNum: Random.natural(0, 1000),
-        outboardPassNum: Random.natural(0, 1000)
+        monPaxRecordTime: Random.time('HH:mm'),
+        inboardPaxNum: Random.natural(0, 1000),
+        outboardPaxNum: Random.natural(0, 1000)
       }
-      res.paxTrendData.push(obj)
+      res.monPaxTrend.push(obj)
       // console.log(res)
       ws.send(JSON.stringify(res), (err) => {
         if (err) {
@@ -417,65 +243,290 @@ wsPublic.on('connection', (ws) => {
     }, 6000)
   }
   inout()
-})
 
-// 客流密度ws
-wsFlow.on('connection', (ws) => {
-  const place = Random.natural(7, 14)
-  let res = {
-    rtYcNum: place,
-    data: []
-  }
-  for (let index = 1; index <= place; index++) {
-    const obj = {
-      monitorAreaDesc: '位置' + index,
-      monitorAreaID: index,
-      monitorYcValue: Random.natural(0, 1000),
-      areaDisplayRange: Random.natural(1, 80),
-      paxVolumeWarn: 60,
-      paxVolumeAlarm: 80,
-      position: Mock.mock({
-        x: Random.natural(-900, -7500),
-        'y|1': [11223, 9700],
-        z: Random.natural(-12000, -25000)
-      })
-    }
-    res.data.push(obj)
-  }
-  res = JSON.stringify(res)
-  ws.send(res)
 
-  //推送变化值
-  const flowTimer = setInterval(() => {
-    let num = Random.natural(1, place)
-    let res = {
-      rtYcNum: 1,
-      data: [
+  ws.on('message', (message) => {
+    console.log('staitonsDev received: %s', message)
+    const devHealthTypeData = {
+      devHealthTypeData: [
         {
-          monitorAreaDesc: '位置' + num,
-          monitorAreaID: num,
-          monitorYcValue: Random.natural(0, 1000),
-          areaDisplayRange: Random.natural(1, 80),
-          paxVolumeWarn: 60,
-          paxVolumeAlarm: 80,
-          position: Mock.mock({
-            x: Random.natural(-900, -7500),
-            'y|1': [11223, 9700],
-            z: Random.natural(-12000, -25000)
-          })
+          devHealthDevType: 0,
+          devHealthState: [
+            {
+              devHealthStateDesc: '正常',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '隔离',
+              devHealthStateValue: 2
+            }
+          ]
+        },
+        {
+          devHealthDevType: 1,
+          devHealthState: [
+            {
+              devHealthStateDesc: '运行',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '停止',
+              devHealthStateValue: 2
+            }
+          ]
+        },
+        {
+          devHealthDevType: 2,
+          devHealthState: [
+            {
+              devHealthStateDesc: '运行',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '停止',
+              devHealthStateValue: 2
+            }
+          ]
+        },
+        {
+          devHealthDevType: 3,
+          devHealthState: [
+            {
+              devHealthStateDesc: '运行',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '停止',
+              devHealthStateValue: 2
+            }
+          ]
+        },
+        {
+          devHealthDevType: 4,
+          devHealthState: [
+            {
+              devHealthStateDesc: '正常',
+              devHealthStateValue: 0,
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 1
+            }
+          ]
+        },
+        {
+          devHealthDevType: 5,
+          devHealthState: [
+            {
+              devHealthStateDesc: '正常',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 1
+            }
+          ]
+        },
+        {
+          devHealthDevType: 6,
+          devHealthState: [
+            {
+              devHealthStateDesc: '开启',
+              devHealthStateValue: 0,
+            },
+            {
+              devHealthStateDesc: '关闭',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 2
+            }
+          ]
+        },
+        {
+          devHealthDevType: 7,
+          devHealthState: [
+            {
+              devHealthStateDesc: '开启',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '关闭',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 2
+            }
+          ]
+        },
+        {
+          devHealthDevType: 8,
+          devHealthState: [
+            {
+              devHealthStateDesc: '开启',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '关闭',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 2
+            }
+          ]
+        },
+        {
+          devHealthDevType: 9,
+          devHealthState: [
+            {
+              devHealthStateDesc: '开启',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '关闭',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 2
+            }
+          ]
+        },
+        {
+          devHealthDevType: 10,
+          devHealthState: [
+            {
+              devHealthStateDesc: '开启',
+              devHealthStateValue: 0
+            },
+            {
+              devHealthStateDesc: '关闭',
+              devHealthStateValue: 1
+            },
+            {
+              devHealthStateDesc: '故障',
+              devHealthStateValue: 2
+            }
+          ]
         }
       ]
     }
-    res = JSON.stringify(res)
-    // console.log(res)
-    ws.send(res, (err) => {
+    const devUpdate = () => {
+      const update = {
+        devHealthMon: []
+      }
+      const data = devHealthTypeData.devHealthTypeData
+      data.forEach((val) => {
+        const obj = {
+          devHealthDevType: val.devHealthDevType,
+          devHealthState: []
+        }
+        val.devHealthState.forEach((v) => {
+          const stateObj = {
+            devHealthStateValue: v.devHealthStateValue,
+            devHealthStateNum: faker.datatype.number({ min: 2, max: 30 })
+          }
+          obj.devHealthState.push(stateObj)
+        })
+        update.devHealthMon.push(obj)
+      })
+      ws.send(JSON.stringify(update), (err) => {
+        if (err) {
+          ws.close()
+          clearInterval(devTimer)
+        }
+      })
+    }
+
+    const devTimer = setInterval(() => {
+      devUpdate()
+    }, 5000)
+    ws.send(JSON.stringify(devHealthTypeData), (err) => {
       if (err) {
-        clearInterval(flowTimer)
         ws.close()
+        clearInterval(devTimer)
       }
     })
-  }, 1000)
+    devUpdate()
+  })
 })
+
+// // 客流密度ws
+// wsFlow.on('connection', (ws) => {
+//   const place = Random.natural(7, 14)
+//   let res = {
+//     rtYcNum: place,
+//     data: []
+//   }
+//   for (let index = 1; index <= place; index++) {
+//     const obj = {
+//       monitorAreaDesc: '位置' + index,
+//       monitorAreaID: index,
+//       monitorYcValue: Random.natural(0, 1000),
+//       areaDisplayRange: Random.natural(1, 80),
+//       paxVolumeWarn: 60,
+//       paxVolumeAlarm: 80,
+//       position: Mock.mock({
+//         x: Random.natural(-900, -7500),
+//         'y|1': [11223, 9700],
+//         z: Random.natural(-12000, -25000)
+//       })
+//     }
+//     res.data.push(obj)
+//   }
+//   res = JSON.stringify(res)
+//   ws.send(res)
+
+//   //推送变化值
+//   const flowTimer = setInterval(() => {
+//     let num = Random.natural(1, place)
+//     let res = {
+//       rtYcNum: 1,
+//       data: [
+//         {
+//           monitorAreaDesc: '位置' + num,
+//           monitorAreaID: num,
+//           monitorYcValue: Random.natural(0, 1000),
+//           areaDisplayRange: Random.natural(1, 80),
+//           paxVolumeWarn: 60,
+//           paxVolumeAlarm: 80,
+//           position: Mock.mock({
+//             x: Random.natural(-900, -7500),
+//             'y|1': [11223, 9700],
+//             z: Random.natural(-12000, -25000)
+//           })
+//         }
+//       ]
+//     }
+//     res = JSON.stringify(res)
+//     // console.log(res)
+//     ws.send(res, (err) => {
+//       if (err) {
+//         clearInterval(flowTimer)
+//         ws.close()
+//       }
+//     })
+//   }, 1000)
+// })
 
 // 环境监测ws
 wsEnv.on('connection', (ws) => {
@@ -916,7 +967,7 @@ patrol.on('connection', (ws) => {
     const name = ['巡检1号', '巡检2号']
     const count = Random.natural(0, 1)
     let res = Mock.mock({
-      patrolFuncId: id[count],
+      patrolFuncName: id[count],
       patrolName: name[count]
     })
     res = JSON.stringify(res)
@@ -1227,10 +1278,10 @@ testUnity.on('connection', (ws) => {
       alarmId: index,
       ymd: Random.date('yyyyMMdd'),
       hmsms: 162412333,
-      alarmlevel: Random.natural(1, 3),
+      alarmlevel: Random.natural(1, 1),
       'alarmstate|1': [1, 2, 3], //报警、事故、恢复、已确认
       tonetimes: '语音报警次数', //暂时未用到
-      equipmentid: devArr[index],
+      'equipmentid|1': ['闸机048', '闸机047', '闸机046', '闸机045', '闸机044', '闸机043', '电梯012', '电梯011'],
       station_desc: '渌水道站',
       'system_name|1': ['FAS', 'AFC', 'CCTV'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
@@ -1310,82 +1361,4 @@ testUnity.on('connection', (ws) => {
   // } catch (error) {
   //   console.log(error)
   // }
-})
-
-// 风水联动ws
-energyWs.on('connection', (ws) => {
-  const list = [
-    {
-      energyTypeID: 3,
-      energyTypeDesc: '风机',
-      energyRatioValue: 2.0
-    },
-    {
-      energyTypeID: 4,
-      energyTypeDesc: '空气处理器',
-      energyRatioValue: 4.0
-    },
-    {
-      energyTypeID: 0,
-      energyTypeDesc: '冷水机组',
-      energyRatioValue: 2.0
-    },
-    {
-      energyTypeID: 1,
-      energyTypeDesc: '冷却泵',
-      energyRatioValue: 5.0
-    },
-    {
-      energyTypeID: 2,
-      energyTypeDesc: '冷却塔',
-      energyRatioValue: 7.0
-    }
-  ]
-  const res = {
-    paxTrendData: [],
-    envTrendData: [],
-    fengJiTrendData: [],
-    energyRatioData: []
-  }
-
-  ws.send(JSON.stringify(res))
-
-  const dataPush = () => {
-    res.paxTrendData.push({
-      recordTime: Random.time('HH:mm'),
-      inBoardPassNum: Random.natural(0, 800),
-      outBoardPassNum: Random.natural(0, 800)
-    })
-    res.envTrendData.push({
-      recordTime: Random.time('HH:mm'),
-      zhanTingTemp: Random.natural(10, 30),
-      zhanTaiTemp: Random.natural(10, 30),
-      zhanTingHum: Random.natural(10, 100),
-      zhanTaiHum: Random.natural(10, 100)
-    })
-    res.fengJiTrendData.push({
-      recordTime: Random.time('HH:mm'),
-      fengJiData: Random.natural(0, 800)
-    })
-    if (res.energyRatioData.length === 0) {
-      res.energyRatioData = list
-    } else {
-      res.energyRatioData = []
-      const index = Random.natural(0, list.length - 1)
-      list[index].energyRatioValue += 1
-      res.energyRatioData.push(list[index])
-    }
-
-    const data = JSON.stringify(res)
-    // console.log(data)
-    ws.send(data, (err) => {
-      if (err) {
-        clearInterval(flowTimer)
-        ws.close()
-      }
-    })
-  }
-  //推送变化值
-  const flowTimer = setInterval(dataPush, 3000)
-  dataPush()
 })
