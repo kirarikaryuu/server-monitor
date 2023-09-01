@@ -42,6 +42,32 @@ const getUrl = (type) => {
   })
 }
 
+// get stream
+const getTopic = () => {
+  return new Promise(async (resolve) => {
+    const baseUrl = 'https://192.168.10.70:443'
+    const requestUrl = '/artemis/api/nms/v1/alarm/getTopic'
+    const headers = { 'content-type': 'application/json', accept: 'application/json' }
+    const body = JSON.stringify({})
+    const timeout = 15
+    const appKey = '27568725'
+    const appSecret = 'tWGt6G45vAPaAFX1CUrb'
+    const res = await Hikopenapi.httpPost(baseUrl + requestUrl, headers, body, appKey, appSecret, timeout)
+    resolve(res)
+  })
+}
+
+//ws
+router.get('/getTopic', async (ctx) => {
+  const result = await getTopic()
+  console.log(JSON.parse(result))
+  let buff = new Buffer(JSON.parse(result).data, 'base64')
+  let text = buff.toString('ascii')
+  console.log(text)
+  ctx.body = text
+})
+
+
 //ws
 router.get('/getWsUrl', async (ctx) => {
   const result = await getUrl('ws')

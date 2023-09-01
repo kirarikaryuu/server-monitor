@@ -98,14 +98,17 @@ app.listen(4396)
 
 const Random = Mock.Random
 
-// 综合看板 9492
+// 综合看板
 const wsPublic = new WebSocket.Server({ port: 9484 })
 // 巡检实时数据
-const patrol = new WebSocket.Server({ port: 9487 })
+const patrol = new WebSocket.Server({ port: 9486 })
 // 环境监测
 const envMonitor = new WebSocket.Server({ port: 9490 })
 // 风水联动的能管管理
 const energyWs = new WebSocket.Server({ port: 9493 })
+
+// 综合看板 9492
+const controlWs = new WebSocket.Server({ port: 9482 })
 
 // // 综合看板
 // const wsPublic = new WebSocket.Server({ port: 9514 })
@@ -469,64 +472,6 @@ wsPublic.on('connection', (ws) => {
     devUpdate()
   })
 })
-
-// // 客流密度ws
-// wsFlow.on('connection', (ws) => {
-//   const place = Random.natural(7, 14)
-//   let res = {
-//     rtYcNum: place,
-//     data: []
-//   }
-//   for (let index = 1; index <= place; index++) {
-//     const obj = {
-//       monitorAreaDesc: '位置' + index,
-//       monitorAreaID: index,
-//       monitorYcValue: Random.natural(0, 1000),
-//       areaDisplayRange: Random.natural(1, 80),
-//       paxVolumeWarn: 60,
-//       paxVolumeAlarm: 80,
-//       position: Mock.mock({
-//         x: Random.natural(-900, -7500),
-//         'y|1': [11223, 9700],
-//         z: Random.natural(-12000, -25000)
-//       })
-//     }
-//     res.data.push(obj)
-//   }
-//   res = JSON.stringify(res)
-//   ws.send(res)
-
-//   //推送变化值
-//   const flowTimer = setInterval(() => {
-//     let num = Random.natural(1, place)
-//     let res = {
-//       rtYcNum: 1,
-//       data: [
-//         {
-//           monitorAreaDesc: '位置' + num,
-//           monitorAreaID: num,
-//           monitorYcValue: Random.natural(0, 1000),
-//           areaDisplayRange: Random.natural(1, 80),
-//           paxVolumeWarn: 60,
-//           paxVolumeAlarm: 80,
-//           position: Mock.mock({
-//             x: Random.natural(-900, -7500),
-//             'y|1': [11223, 9700],
-//             z: Random.natural(-12000, -25000)
-//           })
-//         }
-//       ]
-//     }
-//     res = JSON.stringify(res)
-//     // console.log(res)
-//     ws.send(res, (err) => {
-//       if (err) {
-//         clearInterval(flowTimer)
-//         ws.close()
-//       }
-//     })
-//   }, 1000)
-// })
 
 // 环境监测ws
 wsEnv.on('connection', (ws) => {
@@ -1361,4 +1306,44 @@ testUnity.on('connection', (ws) => {
   // } catch (error) {
   //   console.log(error)
   // }
+})
+
+// 综合看板ws
+controlWs.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    console.log('controlWs received: %s', message)
+    const msgArr = {
+      5: '遥控执行发令超时',
+      6: '遥控撤消',
+      7: '遥控成功',
+      8: '拒动',
+      9: '非期望控制结果',
+      10: '用于不等待控制结果的对象发执行令后报告成功'
+    }
+    const index = Random.natural(5, 10)
+    // 执行追踪
+    let msg = {
+      funcType: 1,
+      opResInfo: "控制输出下发.....",
+      resultType: 4
+    }
+    ws.send(JSON.stringify(msg), (err) => {
+      if (err) {
+        ws.close()
+      }
+    })
+    setTimeout(() => {
+      // 更新
+      let result = {
+        funcType: 1,
+        opResInfo: msgArr[index],
+        resultType: index
+      }
+      ws.send(JSON.stringify(result), (err) => {
+        if (err) {
+          ws.close()
+        }
+      })
+    }, 1000)
+  })
 })
