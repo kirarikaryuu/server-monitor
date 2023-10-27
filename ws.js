@@ -18,6 +18,9 @@ const client = new NacosNamingClient({
   namespace: 'public',
 })
 
+const appKey = '27568725'
+const appSecret = 'tWGt6G45vAPaAFX1CUrb'
+
 // get stream
 const getUrl = (type) => {
   return new Promise(async (resolve) => {
@@ -35,8 +38,6 @@ const getUrl = (type) => {
       expand: 'streamform=rtp&transcode=1&videotype=h264'
     })
     const timeout = 15
-    const appKey = '27568725'
-    const appSecret = 'tWGt6G45vAPaAFX1CUrb'
     const res = await Hikopenapi.httpPost(baseUrl + requestUrl, headers, body, appKey, appSecret, timeout)
     resolve(res)
   })
@@ -50,8 +51,6 @@ const getTopic = () => {
     const headers = { 'content-type': 'application/json', accept: 'application/json' }
     const body = JSON.stringify({})
     const timeout = 15
-    const appKey = '27568725'
-    const appSecret = 'tWGt6G45vAPaAFX1CUrb'
     const res = await Hikopenapi.httpPost(baseUrl + requestUrl, headers, body, appKey, appSecret, timeout)
     resolve(res)
   })
@@ -119,7 +118,7 @@ router.get('/getHlsUrl', async (ctx) => {
 // })
 
 app.use(router.routes()).use(router.allowedMethods()) //把前面所有定义的方法添加到app应用上去
-app.listen(4396)
+app.listen(4884)
 
 const Random = Mock.Random
 

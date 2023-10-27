@@ -7,6 +7,9 @@
     "dev": "node ws.js",
     "ws": "node ws.js",
     "ws-xiamen": "node ws-xiamen.js",
+    "hiktest": "node HikTest.js",
+    "mqtest": "node MqTest.js",
+    "mqtest2": "node MqTest2.js",
     "flv": "node ./rtsp/rtsp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,7 +27,9 @@
     "koa": "^2.13.4",
     "koa-router": "^12.0.0",
     "mockjs": "^1.1.0",
+    "mqtt": "^5.0.5",
     "nacos": "^2.5.1",
+    "stompjs": "^2.3.3",
     "websocket-stream": "^5.5.2",
     "ws": "^8.5.0"
   }

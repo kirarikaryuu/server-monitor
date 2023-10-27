@@ -101,6 +101,8 @@ const Random = Mock.Random
 // 综合看板
 const wsPublic = new WebSocket.Server({ port: 9484 })
 // 巡检实时数据
+const pushWs = new WebSocket.Server({ port: 9485 })
+// 巡检实时数据
 const patrol = new WebSocket.Server({ port: 9486 })
 // 环境监测
 const envMonitor = new WebSocket.Server({ port: 9490 })
@@ -120,14 +122,12 @@ const controlWs = new WebSocket.Server({ port: 9482 })
 // const energyWs = new WebSocket.Server({ port: 9518 })
 
 // const wsFlow = new WebSocket.Server({ port: 9484 })
-const wsEnv = new WebSocket.Server({ port: 9483 })
-const inoutEnv = new WebSocket.Server({ port: 9485 })
 
 const alarm = new WebSocket.Server({ port: 9489 })
 
 
 
-const testUnity = new WebSocket.Server({ port: 32131 })
+const testUnity = new WebSocket.Server({ port: 9483 })
 
 // #define JASON_MONITORENV_DATANUM "monitorEnvAreaNum"
 // #define JASON_MONITORENV_ENVAREATYPEID "envAreaTypeID"
@@ -329,7 +329,7 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 1
+              devHealthStateValue: 2
             }
           ]
         },
@@ -342,7 +342,7 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 1
+              devHealthStateValue: 2
             }
           ]
         },
@@ -473,221 +473,6 @@ wsPublic.on('connection', (ws) => {
   })
 })
 
-// 环境监测ws
-wsEnv.on('connection', (ws) => {
-  // 环境监测
-  let res = {
-    monitorEnvAreaNum: 2,
-    path: [
-      {
-        envAreaTypeID: 0,
-        envAreaTypeDesc: '站厅',
-        monitorType: [
-          {
-            envNameTypeID: 0,
-            envNameTypeDesc: '温度',
-            envNameTypeUnit: '℃'
-          },
-          {
-            envNameTypeID: 1,
-            envNameTypeDesc: '湿度',
-            envNameTypeUnit: '%'
-          },
-          {
-            envNameTypeID: 2,
-            envNameTypeDesc: 'PM2.5',
-            envNameTypeUnit: 'ppm'
-          },
-          {
-            envNameTypeID: 3,
-            envNameTypeDesc: 'PM10',
-            envNameTypeUnit: 'ppm'
-          },
-          {
-            envNameTypeID: 4,
-            envNameTypeDesc: 'SO₂',
-            envNameTypeUnit: 'ppm'
-          },
-          {
-            envNameTypeID: 5,
-            envNameTypeDesc: 'CO₂',
-            envNameTypeUnit: 'ppm'
-          }
-        ]
-      },
-      {
-        envAreaTypeID: 1,
-        envAreaTypeDesc: '站台',
-        monitorType: [
-          {
-            envNameTypeID: 0,
-            envNameTypeDesc: '温度',
-            envNameTypeUnit: '℃'
-          },
-          {
-            envNameTypeID: 1,
-            envNameTypeDesc: '湿度',
-            envNameTypeUnit: '%'
-          },
-          {
-            envNameTypeID: 2,
-            envNameTypeDesc: 'PM2.5',
-            envNameTypeUnit: 'ppm'
-          },
-          {
-            envNameTypeID: 3,
-            envNameTypeDesc: 'PM10',
-            envNameTypeUnit: 'ppm'
-          },
-          {
-            envNameTypeID: 4,
-            envNameTypeDesc: 'SO₂',
-            envNameTypeUnit: 'ppm'
-          },
-          {
-            envNameTypeID: 5,
-            envNameTypeDesc: 'CO₂',
-            envNameTypeUnit: 'ppm'
-          }
-        ]
-      }
-    ]
-  }
-  res = JSON.stringify(res)
-  ws.send(res)
-  ws.on('message', (message) => {
-    console.log('env received: %s', message)
-  })
-  const send = () => {
-    let res = {
-      rtYcNum: 12,
-      data: [
-        {
-          envAreaTypeID: 1, //0:站台,1:站厅
-          envNameTypeID: 0,
-          monitorYcValue: Random.natural(-20, 40)
-        },
-        {
-          envAreaTypeID: 1,
-          envNameTypeID: 1,
-          monitorYcValue: Random.natural(0, 100)
-        },
-        {
-          envAreaTypeID: 1,
-          envNameTypeID: 2,
-          monitorYcValue: Random.natural(100, 1000)
-        },
-        {
-          envAreaTypeID: 1,
-          envNameTypeID: 3,
-          monitorYcValue: Random.natural(100, 1000)
-        },
-        {
-          envAreaTypeID: 1,
-          envNameTypeID: 4,
-          monitorYcValue: Random.natural(100, 1000)
-        },
-        {
-          envAreaTypeID: 1,
-          envNameTypeID: 5,
-          monitorYcValue: Random.natural(100, 1000)
-        },
-        {
-          envAreaTypeID: 0,
-          envNameTypeID: 0,
-          monitorYcValue: Random.natural(-20, 40)
-        },
-        {
-          envAreaTypeID: 0,
-          envNameTypeID: 1,
-          monitorYcValue: Random.natural(0, 100)
-        },
-        {
-          envAreaTypeID: 0,
-          envNameTypeID: 2,
-          monitorYcValue: Random.natural(100, 1000)
-        },
-        {
-          envAreaTypeID: 0,
-          envNameTypeID: 3,
-          monitorYcValue: Random.natural(100, 1000)
-        },
-        {
-          envAreaTypeID: 0,
-          envNameTypeID: 4,
-          monitorYcValue: Random.natural(100, 1000)
-        },
-        {
-          envAreaTypeID: 0,
-          envNameTypeID: 5,
-          monitorYcValue: Random.natural(100, 1000)
-        }
-      ]
-    }
-    res = JSON.stringify(res)
-    ws.send(res, (err) => {
-      // console.log(envTimer)
-      if (err) {
-        if (envTimer) {
-          clearInterval(envTimer)
-        }
-        ws.close()
-      }
-    })
-  }
-  send()
-  // //推送变化值
-  const envTimer = setInterval(send, 4000)
-})
-
-// 客流趋势ws
-inoutEnv.on('connection', (ws) => {
-  const place = Random.natural(7, 9)
-  let res = {
-    rtDataNum: place,
-    data: []
-  }
-  for (let index = 0; index < place; index++) {
-    const half = index % 2
-    let hour = Math.floor(index / 2) + 6
-    if (hour < 10) {
-      hour = '0' + hour
-    }
-    let time
-    if (half === 1) {
-      time = `${hour}:30`
-    } else {
-      time = `${hour}:00`
-    }
-    const obj = {
-      recordTime: time,
-      inboardPassNum: Random.natural(300, 800),
-      outboardPassNum: Random.natural(300, 800)
-    }
-    res.data.push(obj)
-  }
-  ws.send(JSON.stringify(res))
-  ws.on('message', (message) => {
-    // console.log('flow received: %s', message)
-  })
-  //推送变化值
-  const inoutTimer = setInterval(() => {
-    let obj = {
-      recordTime: Random.time('HH:mm'),
-      inboardPassNum: Random.natural(300, 800),
-      outboardPassNum: Random.natural(300, 800)
-    }
-    res.data.push(obj)
-    // console.log(res)
-    ws.send(JSON.stringify(res), (err) => {
-      if (err) {
-        clearInterval(inoutTimer)
-        ws.close()
-      }
-    })
-  }, 6000)
-})
-
 // 报警
 // deleteAlarmData
 // updateAlarmData
@@ -710,12 +495,12 @@ alarm.on('connection', (ws) => {
       tonetimes: '语音报警次数', //暂时未用到
       equipmentid: sxlList[index] + '',
       station_desc: '渌水道站',
-      'system_name|1': ['FAS', 'AFC', 'CCTV'],
+      'system_name|1': ['PIS', 'AFC', 'DQHZ', 'PA', 'BAS', 'ACS', 'PSD', 'FG'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       member_name0: '成员名', //暂时未用到
-      char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
+      char_info: '宇视系统IABA:109VC-上行尾' + index,
       tone_info: '事件语音内容', //暂时未用到
-      'cameraGrp|0-4': [0] //摄像机组名
+      'cameraGrp|0-4': ['34020000001320000003', '34020000001320000003', '34020000001320000003', '34020000001320000003'] //摄像机组名
     })
 
     res.initAlarmData.push(obj)
@@ -759,9 +544,9 @@ alarm.on('connection', (ws) => {
           'system_name|1': ['FAS', 'AFC', 'CCTV'],
           'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
           member_name0: '成员名', //暂时未用到
-          char_info: '宇视系统IABA:109VC渌水道-上行尾' + count,
+          char_info: '宇视系统IABA:109VC-上行尾' + count,
           tone_info: '事件语音内容', //暂时未用到
-          'cameraGrp|0-4': [0] //摄像机组名
+          'cameraGrp|0-4': ['34020000001320000003', '34020000001320000003', '34020000001320000003', '34020000001320000003'] //摄像机组名
         })
       }
       // console.log(res)
@@ -826,6 +611,133 @@ alarm.on('connection', (ws) => {
   }
 })
 
+// 推送ws
+pushWs.on('connection', (ws) => {
+  // 设备查看
+  const devPoiData = () => {
+    const data = {
+      monDevPoiData: []
+    }
+
+    const devArr = ['AMG01', 'AMG02', 'AMG03', 'AMG04', 'AMG05', 'AMG06', '电梯1', '电梯2']
+    const arr2 = [0, 1, 2, 3]
+    arr2.forEach((val) => {
+      devArr.forEach((v, k) => {
+        const obj = Mock.mock({
+          "monDevId": v,
+          "monDevYxAlarmFlag|1": [0, 1], //1:报警  0：正常
+          "monDevYxName": "设备遥信名" + val + k,
+          "monDevYxDesc": "遥信描述" + val + k,
+          "monDevYxStateDesc": "遥信状态描述" + val + k
+        })
+        data.monDevPoiData.push(obj)
+      })
+    })
+    ws.send(JSON.stringify(data))
+  }
+  const data0 = {
+    "monDevPoiData": [
+      {
+        "monDevId": "AMG01",
+        "monDevYxAlarmFlag": 1,
+        "monDevYxName": "dmaf.--2233.St",
+        "monDevYxDesc": "站厅自动检票机AGM10回收票箱1容量",
+        "monDevYxStateDesc": "将满"
+      },
+      {
+        "monDevId": "AMG01",
+        "monDevYxAlarmFlag": 1,
+        "monDevYxName": "dmaf.--2234.St",
+        "monDevYxDesc": "站厅自动检票机AGM10回收票箱2容量",
+        "monDevYxStateDesc": "将满"
+      },
+      {
+        "monDevId": "AMG01",
+        "monDevYxAlarmFlag": 0,
+        "monDevYxName": "dmaf.--2274.St",
+        "monDevYxDesc": "站厅自动检票机AGM10通信状态",
+        "monDevYxStateDesc": "正常"
+      }
+    ]
+  }
+  ws.send(JSON.stringify(data0))
+  const data1 = {
+    "monDevPoiData": [
+      {
+        "monDevId": "AMG01",
+        "monDevYxAlarmFlag": 1,
+        "monDevYxName": "dmaf.--2274.St",
+        "monDevYxDesc": "站厅自动检票机AGM10通信状态",
+        "monDevYxStateDesc": "正常"
+      }
+    ]
+  }
+
+  // 设备状态三维显示
+  const devStatusData = {
+    "monDevData": [
+      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 1 },
+      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 1 },
+      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 2 },
+      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 2 },
+      { "monDevId": "AMG01", "monDevYxValue": 2, "monDevDispPolicy": 2 },
+      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 3 },
+      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 3 },
+      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 4 },
+      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 4 },
+      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 5 },
+      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 5 },
+      { "monDevId": "ASD216", "monDevYxValue": 0, "monDevDispPolicy": 6 },
+      { "monDevId": "ASD216", "monDevYxValue": 1, "monDevDispPolicy": 6 },
+      { "monDevId": "ASD216", "monDevYxValue": 0, "monDevDispPolicy": 7 },
+      { "monDevId": "ASD216", "monDevYxValue": 1, "monDevDispPolicy": 7 },
+      { "monDevId": "ASD2", "monDevYxValue": 0, "monDevDispPolicy": 8 },
+      { "monDevId": "ASD2", "monDevYxValue": 1, "monDevDispPolicy": 8 },
+      { "monDevId": "ASD2", "monDevYxValue": 0, "monDevDispPolicy": 9 },
+      { "monDevId": "ASD2", "monDevYxValue": 1, "monDevDispPolicy": 9 },
+      { "monDevId": "MSD1_1", "monDevYxValue": 0, "monDevDispPolicy": 10 },
+      { "monDevId": "MSD1_1", "monDevYxValue": 1, "monDevDispPolicy": 10 },
+      { "monDevId": "ASD2", "monDevYxValue": 0, "monDevDispPolicy": 11 },
+      { "monDevId": "ASD2", "monDevYxValue": 1, "monDevDispPolicy": 11 },
+      { "monDevId": "ASD216", "monDevYxValue": 0, "monDevDispPolicy": 12 },
+      { "monDevId": "ASD216", "monDevYxValue": 1, "monDevDispPolicy": 12 },
+      { "monDevId": "ASD216", "monDevYxValue": 0, "monDevDispPolicy": 13 },
+      { "monDevId": "ASD216", "monDevYxValue": 1, "monDevDispPolicy": 13 },
+      { "monDevId": "电梯15", "monDevYxValue": 0, "monDevDispPolicy": 14 },
+      { "monDevId": "电梯15", "monDevYxValue": 1, "monDevDispPolicy": 14 },
+      { "monDevId": "电梯15", "monDevYxValue": 2, "monDevDispPolicy": 14 },
+      { "monDevId": "电梯15", "monDevYxValue": 4, "monDevDispPolicy": 14 },
+      { "monDevId": "电梯15", "monDevYxValue": 0, "monDevDispPolicy": 15 },
+      { "monDevId": "电梯15", "monDevYxValue": 1, "monDevDispPolicy": 15 },
+      { "monDevId": "电梯15", "monDevYxValue": 0, "monDevDispPolicy": 16 },
+      { "monDevId": "电梯15", "monDevYxValue": 1, "monDevDispPolicy": 16 },
+      { "monDevId": "电梯15", "monDevYxValue": 0, "monDevDispPolicy": 17 },
+      { "monDevId": "电梯15", "monDevYxValue": 1, "monDevDispPolicy": 17 },
+      { "monDevId": "电梯15", "monDevYxValue": 2, "monDevDispPolicy": 17 },
+      { "monDevId": "直梯1", "monDevYxValue": 0, "monDevDispPolicy": 18 },
+      { "monDevId": "直梯1", "monDevYxValue": 1, "monDevDispPolicy": 18 },
+      { "monDevId": "PIS001", "monDevYxValue": 0, "monDevDispPolicy": 19 },
+      { "monDevId": "PIS001", "monDevYxValue": 1, "monDevDispPolicy": 19 },
+      { "monDevId": "PIS001", "monDevYxValue": 0, "monDevDispPolicy": 20 },
+      { "monDevId": "PIS001", "monDevYxValue": 1, "monDevDispPolicy": 20 },
+      { "monDevId": "卷帘门01", "monDevYxValue": 0, "monDevDispPolicy": 21 },
+      { "monDevId": "卷帘门01", "monDevYxValue": 1, "monDevDispPolicy": 21 },
+      { "monDevId": "卷帘门01", "monDevYxValue": 0, "monDevDispPolicy": 22 },
+      { "monDevId": "卷帘门01", "monDevYxValue": 1, "monDevDispPolicy": 22 },
+      { "monDevId": "Z04-DDF-A1", "monDevYxValue": 0, "monDevDispPolicy": 23 },
+      { "monDevId": "Z04-DDF-A1", "monDevYxValue": 1, "monDevDispPolicy": 23 },
+      { "monDevId": "Z04-DDF-A1", "monDevYxValue": 0, "monDevDispPolicy": 24 },
+      { "monDevId": "Z04-DDF-A1", "monDevYxValue": 1, "monDevDispPolicy": 24 }
+    ]
+  }
+  setInterval(() => {
+    // devPoiData()
+  }, 5000)
+  setTimeout(() => {
+    ws.send(JSON.stringify(devStatusData))
+    ws.send(JSON.stringify(data1))
+  }, 6000)
+})
 // 自动巡检ws
 patrol.on('connection', (ws) => {
   // 模式推送
@@ -839,6 +751,27 @@ patrol.on('connection', (ws) => {
     }
     ws.send(JSON.stringify(result))
     console.log(result);
+    const planPush = () => {
+      console.log('应急预案push')
+      let res = {
+        trigType: 1,
+        emgPlanId: 1,
+        emgPlanDesc: '应急预案描述' + 1,
+        emgPlanType: '应急预案类型' + 1,
+        emgPlanInfo: '应急预案内容' + 1,
+        cameraGrp: ['34020000001320000001', '34020000001320000002', '34020000001320000003', '34020000001320000003', '34020000001320000003']
+
+      }
+      res = JSON.stringify(res)
+      ws.send(res, (err) => {
+        if (err) {
+          // if (patrolTimer) clearInterval(patrolTimer)
+          ws.close()
+        }
+      })
+    }
+    // 预案推送
+    // planPush()
   }, 2000)
   const ykObj = Mock.mock({
     devYxName: guid(),
@@ -864,7 +797,7 @@ patrol.on('connection', (ws) => {
       const obj = Mock.mock({
         devYxInfo: [],
         devId: res.RegDevId,
-        'cameraGrp|1': [[], [1]]
+        'cameraGrp|1': [[], ['34020000001320000003']]
       })
       const count = Random.natural(5, 9)
       // const count = 1
@@ -873,7 +806,7 @@ patrol.on('connection', (ws) => {
           devYxName: guid(),
           devYxDesc: '描述' + i,
           devYxStateDesc: '状态描述' + i,
-          'devYxStateAlarmFlag|1': [0, 1],
+          'devYxStateAlarmFlag|1': ['34020000001320000003', '34020000001320000003'],
           isYk: 0
         })
         obj.devYxInfo.push(info)
@@ -906,49 +839,6 @@ patrol.on('connection', (ws) => {
     }
   })
   //推送
-  const patrolPush = () => {
-    console.log('自动巡检push')
-    const id = [1, 2]
-    const name = ['巡检1号', '巡检2号']
-    const count = Random.natural(0, 1)
-    let res = Mock.mock({
-      patrolFuncName: id[count],
-      patrolName: name[count]
-    })
-    res = JSON.stringify(res)
-    ws.send(res, (err) => {
-      if (err) {
-        // if (patrolTimer) clearInterval(patrolTimer)
-        ws.close()
-      }
-    })
-  }
-  const planPush = () => {
-    console.log('应急预案push')
-    let res = Mock.mock({
-      emgPlanData: {
-        emgPlanId: 1,
-        emgPlanDesc: '应急预案描述' + 1,
-        emgPlanType: '应急预案类型' + 1,
-        emgPlanInfo: '应急预案内容' + 1,
-        cameraGrp: [1, 2, 3, 4, 5]
-      }
-    })
-    res = JSON.stringify(res)
-    ws.send(res, (err) => {
-      if (err) {
-        // if (patrolTimer) clearInterval(patrolTimer)
-        ws.close()
-      }
-    })
-  }
-  setTimeout(() => {
-    patrolPush()
-    planPush()
-  }, 6000)
-  // const patrolTimer = setInterval(() => {
-  //   planPush()
-  // }, 10000)
 })
 
 // 客流密度ws
@@ -1214,26 +1104,26 @@ envMonitor.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 testUnity.on('connection', (ws) => {
-  const devArr = ['闸机048', '闸机047', '闸机046', '闸机045', '闸机044', '闸机043', '电梯012', '电梯011']
+  const devArr = ['AMG01', 'AMG02', 'AMG03', 'AMG04', 'AMG05', 'AMG06', '电梯1', '电梯2']
   let res = {
     initAlarmData: []
   }
   for (let index = 0; index < devArr.length; index++) {
     const obj = Mock.mock({
       alarmId: index,
-      ymd: Random.date('yyyyMMdd'),
-      hmsms: 162412333,
+      ymd: 20231008,
+      hmsms: Random.date('HHmmssSSS'),
       alarmlevel: Random.natural(1, 1),
       'alarmstate|1': [1, 2, 3], //报警、事故、恢复、已确认
       tonetimes: '语音报警次数', //暂时未用到
-      'equipmentid|1': ['闸机048', '闸机047', '闸机046', '闸机045', '闸机044', '闸机043', '电梯012', '电梯011'],
+      'equipmentid|1': ['AMG01', 'AMG02', 'AMG03', 'AMG04', 'AMG05', 'AMG06', '电梯1', '电梯2'],
       station_desc: '渌水道站',
-      'system_name|1': ['FAS', 'AFC', 'CCTV'],
+      'system_name|1': ['PIS', 'AFC', 'DQHZ', 'PA', 'BAS', 'ACS', 'PSD', 'FG'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       member_name0: '成员名', //暂时未用到
-      char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
+      char_info: '宇视系统IABA:109VC-上行尾|||' + index,
       tone_info: '事件语音内容', //暂时未用到
-      'cameraGrp|1': [[1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]] //摄像机组名
+      'cameraGrp': ['34020000001320000003', '34020000001320000003', '34020000001320000003', '34020000001320000003'] //摄像机组名
     })
 
     res.initAlarmData.push(obj)
@@ -1261,6 +1151,78 @@ testUnity.on('connection', (ws) => {
     }
   })
 
+  const data1 = {
+    "initAlarmData": [
+      {
+        "alarmId": 61,
+        "ymd": 20231024,
+        "hmsms": 113108919,
+        "alarmlevel": 1,
+        "alarmstate": 2,
+        "tonetimes": 0,
+        "equipmentid": "电梯5",
+        "station_desc": "",
+        "system_name": "SOM",
+        "system_desc": "智慧车站",
+        "member_name0": "dmsm.--1316.St",
+        "char_info": "                 扶梯自动扶梯0204-E03(N)扶梯故障 |||正常",
+        "tone_info": "一级报警.wav",
+        "cameraGrp": []
+      },
+      {
+        "alarmId": 63,
+        "ymd": 20231024,
+        "hmsms": 112054285,
+        "alarmlevel": 1,
+        "alarmstate": 4,
+        "tonetimes": 0,
+        "equipmentid": "电梯6",
+        "station_desc": "",
+        "system_name": "SOM",
+        "system_desc": "智慧车站",
+        "member_name0": "dmsm.--1329.St",
+        "char_info": "                 扶梯自动扶梯0204-E04(N)扶梯故障 |||正常",
+        "tone_info": "",
+        "cameraGrp": []
+      }
+    ]
+  }
+  const data2 = {
+    "initAlarmData": [
+      {
+        "alarmId": 61,
+        "ymd": 20231024,
+        "hmsms": 113126469,
+        "alarmlevel": 1,
+        "alarmstate": 4,
+        "tonetimes": 0,
+        "equipmentid": "电梯5",
+        "station_desc": "",
+        "system_name": "SOM",
+        "system_desc": "智慧车站",
+        "member_name0": "dmsm.--1316.St",
+        "char_info": "                 扶梯自动扶梯0204-E03(N)扶梯故障 |||正常",
+        "tone_info": "",
+        "cameraGrp": []
+      },
+      {
+        "alarmId": 63,
+        "ymd": 20231024,
+        "hmsms": 112054285,
+        "alarmlevel": 1,
+        "alarmstate": 4,
+        "tonetimes": 0,
+        "equipmentid": "电梯6",
+        "station_desc": "",
+        "system_name": "SOM",
+        "system_desc": "智慧车站",
+        "member_name0": "dmsm.--1329.St",
+        "char_info": "                 扶梯自动扶梯0204-E04(N)扶梯故障 |||正常",
+        "tone_info": "",
+        "cameraGrp": []
+      }
+    ]
+  }
   const alarmTimer = setInterval(() => {
     // 事件
     let event = {
@@ -1312,38 +1274,92 @@ testUnity.on('connection', (ws) => {
 controlWs.on('connection', (ws) => {
   ws.on('message', (message) => {
     console.log('controlWs received: %s', message)
-    const msgArr = {
-      5: '遥控执行发令超时',
-      6: '遥控撤消',
-      7: '遥控成功',
-      8: '拒动',
-      9: '非期望控制结果',
-      10: '用于不等待控制结果的对象发执行令后报告成功'
-    }
-    const index = Random.natural(5, 10)
-    // 执行追踪
-    let msg = {
-      funcType: 1,
-      opResInfo: "控制输出下发.....",
-      resultType: 4
-    }
-    ws.send(JSON.stringify(msg), (err) => {
-      if (err) {
-        ws.close()
-      }
-    })
-    setTimeout(() => {
-      // 更新
-      let result = {
-        funcType: 1,
-        opResInfo: msgArr[index],
-        resultType: index
-      }
-      ws.send(JSON.stringify(result), (err) => {
-        if (err) {
-          ws.close()
+    const { funcType } = JSON.parse(message)
+    switch (funcType) {
+      case 1:
+        const msgArr = {
+          5: '遥控执行发令超时',
+          6: '遥控撤消',
+          7: '遥控成功',
+          8: '拒动',
+          9: '非期望控制结果',
+          10: '报告成功'
         }
-      })
-    }, 1000)
+        const index = Random.natural(5, 10)
+        // 执行追踪
+        let msg = {
+          funcType: 1,
+          opResInfo: "控制输出下发.....",
+          resultType: 4
+        }
+        ws.send(JSON.stringify(msg), (err) => {
+          if (err) {
+            ws.close()
+          }
+        })
+        setTimeout(() => {
+          // 更新
+          let result = {
+            funcType: 1,
+            opResInfo: msgArr[index],
+            resultType: index
+          }
+          ws.send(JSON.stringify(result), (err) => {
+            if (err) {
+              ws.close()
+            }
+          })
+        }, 1000)
+        break
+      case 2:
+        const msgArr2 = {
+          0: '执行',
+          1: '超时',
+          2: '成功',
+          3: '失败',
+          126: '模拟量输出命令错误',
+          127: ''
+        }
+        const index2 = Random.natural(0, 3)
+        // 执行追踪
+        let msg2 = {
+          funcType: 2,
+          opResInfo: "执行...",
+          resultType: 0
+        }
+        ws.send(JSON.stringify(msg2), (err) => {
+          if (err) {
+            ws.close()
+          }
+        })
+        setTimeout(() => {
+          // 更新
+          let result = {
+            funcType: 1,
+            opResInfo: msgArr2[index2],
+            resultType: index2
+          }
+          ws.send(JSON.stringify(result), (err) => {
+            if (err) {
+              ws.close()
+            }
+          })
+        }, 1000)
+        setTimeout(() => {
+          // 更新
+          let result = {
+            funcType: 1,
+            opResInfo: msgArr2[127],
+            resultType: 127
+          }
+          ws.send(JSON.stringify(result), (err) => {
+            if (err) {
+              ws.close()
+            }
+          })
+        }, 1500)
+        break
+    }
+
   })
 })
