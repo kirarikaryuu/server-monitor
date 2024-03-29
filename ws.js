@@ -6,7 +6,7 @@ const Hikopenapi = require('hikopenapi-node')
 const Koa = require('koa')
 const Router = require('koa-router')
 // nacos
-const { NacosNamingClient } = require('nacos');
+const { NacosNamingClient } = require('nacos')
 
 const app = new Koa()
 const router = new Router()
@@ -15,7 +15,7 @@ const router = new Router()
 const client = new NacosNamingClient({
   logger: console,
   serverList: '192.168.20.179:8848',
-  namespace: 'public',
+  namespace: 'public'
 })
 
 const appKey = '27568725'
@@ -65,7 +65,6 @@ router.get('/getTopic', async (ctx) => {
   console.log(text)
   ctx.body = text
 })
-
 
 //ws
 router.get('/getWsUrl', async (ctx) => {
@@ -146,7 +145,8 @@ const inoutEnv = new WebSocket.Server({ port: 9485 })
 
 const alarm = new WebSocket.Server({ port: 9489 })
 
-
+// 故障
+const wsReport = new WebSocket.Server({ port: 9514 })
 
 const testUnity = new WebSocket.Server({ port: 32131 })
 
@@ -169,6 +169,9 @@ const guid = () => {
 
 // 综合看板ws
 wsPublic.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    console.log('综合看板 wsPublic 9492 received: %s', message)
+  })
   // 客流密度ws
   const flow = () => {
     const place = Random.natural(7, 14)
@@ -189,12 +192,15 @@ wsPublic.on('connection', (ws) => {
           y: 0,
           z: Random.float(-3, -2, 2, 2)
         }),
-        Floor: '站厅层',
+        Floor: '站厅层'
       }
       res.paxMonitorData.push(obj)
     }
     res = JSON.stringify(res)
     ws.send(res)
+    ws.on('message', (message) => {
+      ws.send(res)
+    })
 
     //推送变化值
     const flowTimer = setInterval(() => {
@@ -213,7 +219,7 @@ wsPublic.on('connection', (ws) => {
               y: 0,
               z: Random.float(-3, -2, 2, 2)
             }),
-            Floor: '站厅层',
+            Floor: '站厅层'
           }
         ]
       }
@@ -311,7 +317,7 @@ wsPublic.on('connection', (ws) => {
     res = JSON.stringify(res)
     ws.send(res)
     ws.on('message', (message) => {
-      console.log('env received: %s', message)
+      ws.send(res)
     })
     const send = () => {
       let res = {
@@ -422,7 +428,7 @@ wsPublic.on('connection', (ws) => {
     }
     ws.send(JSON.stringify(res))
     ws.on('message', (message) => {
-      // console.log('flow received: %s', message)
+      ws.send(JSON.stringify(res))
     })
     //推送变化值
     const inoutTimer = setInterval(() => {
@@ -723,7 +729,7 @@ inoutEnv.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 alarm.on('connection', (ws) => {
-  let count = Random.natural(7, 13)
+  let count = Random.natural(20, 30)
   let res = {
     initAlarmData: []
   }
@@ -734,13 +740,18 @@ alarm.on('connection', (ws) => {
       // hmsms: Random.time(),
       ymd: Random.date('yyyyMMdd'),
       hmsms: 162412333,
-      alarmlevel: Random.natural(1, 3),
+      alarmlevel: Random.natural(1, 8),
       'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
       tonetimes: '语音报警次数', //暂时未用到
       equipmentid: sxlList[index] + '',
       station_desc: '渌水道站',
-      'system_name|1': ['FAS', 'AFC', 'CCTV'],
+      'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
+      'eventtype|1': [
+        1, 2, 3, 4, 5, 6, 11, 12, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013,
+        1014, 1015, 1016, 1100, 1101, 2000, 2001, 2002, 3000, 3001, 3002, 3003, 3004, 3005, 3013, 3014, 3016, 3017,
+        3018, 3019, 3020, 3021, 3022, 3023, 3024, 3025
+      ],
       member_name0: '成员名', //暂时未用到
       char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
       tone_info: '事件语音内容', //暂时未用到
@@ -780,13 +791,17 @@ alarm.on('connection', (ws) => {
           alarmId: count,
           ymd: Random.date('yyyyMMdd'),
           hmsms: 162412333,
-          alarmlevel: Random.natural(1, 3),
+          alarmlevel: Random.natural(1, 8),
           'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
           tonetimes: '语音报警次数', //暂时未用到
           equipmentid: sxlList[count] + '',
-          station_desc: '渌水道站',
-          'system_name|1': ['FAS', 'AFC', 'CCTV'],
+          'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
           'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
+          'eventtype|1': [
+            1, 2, 3, 4, 5, 6, 11, 12, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012,
+            1013, 1014, 1015, 1016, 1100, 1101, 2000, 2001, 2002, 3000, 3001, 3002, 3003, 3004, 3005, 3013, 3014, 3016,
+            3017, 3018, 3019, 3020, 3021, 3022, 3023, 3024, 3025
+          ],
           member_name0: '成员名', //暂时未用到
           char_info: '宇视系统IABA:109VC渌水道-上行尾' + count,
           tone_info: '事件语音内容', //暂时未用到
@@ -838,7 +853,7 @@ alarm.on('connection', (ws) => {
             station_desc: '渌水道站',
             'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
             member_name0: '成员名', //暂时未用到
-            char_info: '电伴热DBR_s_032号回路系统运行/停止状态',
+            char_info: '电伴热|||DBR_s_032号回路系统运行/停止状态',
             tone_info: '事件语音内容' //暂时未用到
           })
         ]
@@ -867,7 +882,7 @@ patrol.on('connection', (ws) => {
       }
     }
     ws.send(JSON.stringify(result))
-    console.log(result);
+    console.log(result)
   }, 2000)
   const ykObj = Mock.mock({
     devYxName: guid(),
@@ -984,7 +999,7 @@ patrol.on('connection', (ws) => {
 envMonitor.on('connection', (ws) => {
   let envTimer = null
   ws.on('message', (message) => {
-    console.log('envMonitor received: %s', message)
+    console.log('客流密度 9490 envMonitor received: %s', message)
     const type = parseInt(JSON.parse(message)?.FuncType)
     console.log(type)
     if (type == 0) {
@@ -1005,221 +1020,220 @@ envMonitor.on('connection', (ws) => {
         // }
         res.data = [
           {
-            "monitorEnvDevId": "温度传感器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 30
+            monitorEnvDevId: '温度传感器3',
+            Floor: '站厅层',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 30
           },
           {
-            "monitorEnvDevId": "温度传感器4",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 0
+            monitorEnvDevId: '温度传感器4',
+            Floor: '站厅层',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器1',
+            Floor: '站厅层',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "温度传感器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 0
+            monitorEnvDevId: '温度传感器2',
+            Floor: '站厅层',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "CO2传感器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "CO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'CO2传感器1',
+            Floor: '站厅层',
+            envNameTypeDesc: 'CO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器3',
+            Floor: '站厅层',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "温度传感器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 0
+            monitorEnvDevId: '温度传感器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器2',
+            Floor: '站厅层',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "温度传感器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 0
+            monitorEnvDevId: '温度传感器1',
+            Floor: '站厅层',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器4",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器4',
+            Floor: '站厅层',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器2',
+            Floor: '站厅层',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器4",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器4',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器3',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器6",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器6',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 40
+            monitorEnvDevId: 'PM10探测器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 40
           },
           {
-            "monitorEnvDevId": "PM10探测器4",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器4',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器1',
+            Floor: '站厅层',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器1',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器1',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器2',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器3',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器7",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器7',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器2',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器6",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器6',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器7",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 600
+            monitorEnvDevId: 'PM10探测器7',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 600
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器4",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器4',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器3',
+            Floor: '站厅层',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           }
         ]
         res.data.forEach((val, key) => {
           val.monitorYcValue = Random.natural(0, 100)
         })
         res = JSON.stringify(res)
-        console.log(res)
         ws.send(res, (err) => {
           if (err) {
             clearInterval(envTimer)
@@ -1243,9 +1257,28 @@ envMonitor.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 testUnity.on('connection', (ws) => {
-  const devArr = ['闸机048', '闸机047', '闸机046', '闸机045', '闸机044', '闸机043', '电梯012', '电梯011']
+  const devArr = [
+    '闸机048',
+    '闸机047',
+    '闸机046',
+    '闸机045',
+    '闸机044',
+    '闸机043',
+    '电梯012',
+    '电梯011',
+    '闸机048',
+    '闸机047',
+    '闸机046',
+    '闸机045',
+    '闸机044',
+    '闸机043',
+    '电梯012',
+    '电梯011',
+    '电梯012',
+    '电梯011'
+  ]
   let res = {
-    initAlarmData: []
+    allAlarmData: []
   }
   for (let index = 0; index < devArr.length; index++) {
     const obj = Mock.mock({
@@ -1257,38 +1290,42 @@ testUnity.on('connection', (ws) => {
       tonetimes: '语音报警次数', //暂时未用到
       equipmentid: devArr[index],
       station_desc: '渌水道站',
-      'system_name|1': ['FAS', 'AFC', 'CCTV'],
+      'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       member_name0: '成员名', //暂时未用到
-      char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
+      char_info: '宇视系统|||IABA:109VC渌水道-上行尾' + index,
       tone_info: '事件语音内容', //暂时未用到
-      'cameraGrp|1': [[1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]] //摄像机组名
+      'cameraGrp|1': [
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      ] //摄像机组名
     })
 
-    res.initAlarmData.push(obj)
+    res.allAlarmData.push(obj)
   }
+  setInterval(() => ws.send(JSON.stringify(res)), 8000)
   ws.send(JSON.stringify(res))
-  ws.on('message', (message) => {
-    console.log('testUnity received: %s', message)
-    // 更新
-    console.log(JSON.parse(message))
-    if (JSON.parse(message).alarmidlist) {
-      const idList = JSON.parse(message).alarmidlist
-      idList.forEach((val) => {
-        let updateIndex = res.initAlarmData.findIndex((data) => data.alarmId === val)
-        let updateObj = res.initAlarmData[updateIndex]
-        updateObj.alarmstate = 5
-        let update = {
-          updateAlarmData: updateObj
-        }
-        ws.send(JSON.stringify(update), (err) => {
-          if (err) {
-            ws.close()
-          }
-        })
-      })
-    }
-  })
+  // ws.on('message', (message) => {
+  //   console.log('testUnity received: %s', message)
+  //   // 更新
+  //   console.log(JSON.parse(message))
+  //   if (JSON.parse(message).alarmidlist) {
+  //     const idList = JSON.parse(message).alarmidlist
+  //     idList.forEach((val) => {
+  //       let updateIndex = res.initAlarmData.findIndex((data) => data.alarmId === val)
+  //       let updateObj = res.initAlarmData[updateIndex]
+  //       updateObj.alarmstate = 5
+  //       let update = {
+  //         updateAlarmData: updateObj
+  //       }
+  //       ws.send(JSON.stringify(update), (err) => {
+  //         if (err) {
+  //           ws.close()
+  //         }
+  //       })
+  //     })
+  //   }
+  // })
 
   const alarmTimer = setInterval(() => {
     // 事件
@@ -1301,10 +1338,15 @@ testUnity.on('connection', (ws) => {
           'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
           tonetimes: '语音报警次数', //暂时未用到
           station_desc: '渌水道站',
-          // 'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
+          'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
           system_desc: '环控BAS',
+          'eventtype|1': [
+            1, 2, 3, 4, 5, 6, 11, 12, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012,
+            1013, 1014, 1015, 1016, 1100, 1101, 2000, 2001, 2002, 3000, 3001, 3002, 3003, 3004, 3005, 3013, 3014, 3016,
+            3017, 3018, 3019, 3020, 3021, 3022, 3023, 3024, 3025
+          ],
           member_name0: '成员名', //暂时未用到
-          char_info: '电伴热DBR_s_032号回路系统运行/停止状态',
+          char_info: '电伴热|||DBR_s_032号回路系统运行/停止状态',
           tone_info: '事件语音内容' //暂时未用到
         })
       ]
@@ -1339,6 +1381,9 @@ testUnity.on('connection', (ws) => {
 
 // 风水联动ws
 energyWs.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    console.log('风水联动 energyWs 9493 received: %s', message)
+  })
   const list = [
     {
       energyTypeID: 3,
@@ -1413,4 +1458,45 @@ energyWs.on('connection', (ws) => {
   //推送变化值
   const flowTimer = setInterval(dataPush, 3000)
   dataPush()
+})
+
+// 故障报告
+wsReport.on('connection', (ws) => {
+  const alarmTimer = setInterval(() => {
+    // 事件
+    let event = {
+      EventData: [
+        Mock.mock({
+          ymd: Random.date('yyyyMMdd'),
+          // ymd: 20240119,
+          hmsms: 162412333,
+          alarmlevel: Random.natural(0, 3),
+          'alarmstate|1': [1, 2, 3, 4, 5], //报警、事故、恢复、已确认
+          tonetimes: 1, //暂时未用到
+          station_desc: '渌水道站',
+          'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
+          system_desc: '环控BAS',
+          'eventtype|1': [1002, 1007, 1011, 2004],
+          member_name0: '成员名', //暂时未用到
+          char_info: '电伴热|||DBR_s_032号回路系统运行/停止状态' + Random.natural(0, 100000),
+          tone_info: '', //暂时未用到
+          alarmcolor: ' ',
+          member_name0: ' ', //成员名
+          member_name1: ' ', //成员名
+          member_name2: ' ', //成员名
+          member_name3: ' ', //成员名
+          'group_name|1': ['group1', 'group2', 'group3'],
+          subgrp_name: ' ',
+          state_value: 1, //状态值
+          state_value2: 1
+        })
+      ]
+    }
+    ws.send(JSON.stringify(event), (err) => {
+      if (err) {
+        clearInterval(alarmTimer)
+        ws.close()
+      }
+    })
+  }, 1000)
 })

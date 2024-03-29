@@ -1,13 +1,14 @@
 const Stomp = require('stompjs');
 
 const getMq = () => {
-    // const host = 'ws://localhost:61614/'
+    const host = 'ws://192.168.19.27:61614/'
+    const clientId = `ws_${Math.random().toString(16).slice(3)}`
     const ip = 'broker.emqx.io'
     const port = '1883'
     const headers = {
         login: 'admin',
         passcode: 'admin',
-        'client-id': 'test111'
+        'client-id': clientId
     }
     // const headers = {
     //     "userName": "artemis_27104148",
@@ -17,14 +18,14 @@ const getMq = () => {
         console.log(frame)
         client.subscribe(
             // 订阅到交换机
-            'ActiveMQ.DLQ',
+            '/topic/ActiveMQ.Advisory.Consumer.Topic.EnergyManage',
             responseCallback
         )
-        // client.subscribe(
-        //     // 订阅到交换机
-        //     'artemis/even_nms/7617069060/admin',
-        //     responseCallback
-        // )
+        client.subscribe(
+            // 订阅到交换机
+            'EnergyManage',
+            responseCallback
+        )
         // client.subscribe(
         //     // 订阅到交换机
         //     'artemis/even_iac/7617069062/admin',
@@ -54,13 +55,13 @@ const getMq = () => {
     const onFailed = (frame) => {
         console.log('MQ Failed: ' + frame) // 失败后  等待5秒后重新连接
         setTimeout(() => {
-            // const client = Stomp.overWS(host)
-            const client = Stomp.overTCP(ip, port)
+            const client = Stomp.overWS(host)
+            // const client = Stomp.overTCP(ip, port)
             client.connect(headers, onConnected, onFailed)
         }, 3000)
     }
-    // const client = Stomp.overWS(host)
-    const client = Stomp.overTCP(ip, port)
+    const client = Stomp.overWS(host)
+    // const client = Stomp.overTCP(ip, port)
     client.connect(headers, onConnected, onFailed)
 }
 getMq()

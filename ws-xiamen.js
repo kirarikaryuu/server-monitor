@@ -1,13 +1,13 @@
 const WebSocket = require('ws') //引入模块
 const Mock = require('mockjs')
-const { faker } = require('@faker-js/faker/locale/zh_CN');
+const { faker } = require('@faker-js/faker/locale/zh_CN')
 const sxlList = require('./data')
 // 海康sdk
 const Hikopenapi = require('hikopenapi-node')
 const Koa = require('koa')
 const Router = require('koa-router')
 // nacos
-const { NacosNamingClient } = require('nacos');
+const { NacosNamingClient } = require('nacos')
 
 const app = new Koa()
 const router = new Router()
@@ -16,7 +16,7 @@ const router = new Router()
 const client = new NacosNamingClient({
   logger: console,
   serverList: '192.168.20.179:8848',
-  namespace: 'public',
+  namespace: 'public'
 })
 
 // get stream
@@ -112,6 +112,9 @@ const energyWs = new WebSocket.Server({ port: 9493 })
 // 综合看板 9492
 const controlWs = new WebSocket.Server({ port: 9482 })
 
+// 智慧照明
+const lightWs = new WebSocket.Server({ port: 9487 })
+
 // // 综合看板
 // const wsPublic = new WebSocket.Server({ port: 9514 })
 // // 巡检实时数据
@@ -124,8 +127,6 @@ const controlWs = new WebSocket.Server({ port: 9482 })
 // const wsFlow = new WebSocket.Server({ port: 9484 })
 
 const alarm = new WebSocket.Server({ port: 9489 })
-
-
 
 const testUnity = new WebSocket.Server({ port: 9483 })
 
@@ -149,21 +150,20 @@ const guid = () => {
 // 综合看板ws
 wsPublic.on('connection', (ws) => {
   const staitonsFlow = () => {
-    const stationArr = Array.from({ length: 4 }, () => faker.address.streetName() + '站')
+    const stationArr = Array.from({ length: 4 }, () => faker.address.street() + '站')
     const data = {
-      monPaxData: [
-      ]
+      monPaxData: []
     }
     stationArr.forEach((val) => {
       const data1 = {
-        "monPaxStation": val,
-        "monPaxType": 0,
-        "monPaxYcValue": faker.datatype.number({ min: 50, max: 300 })
+        monPaxStation: val,
+        monPaxType: 0,
+        monPaxYcValue: faker.datatype.number({ min: 50, max: 300 })
       }
       const data2 = {
-        "monPaxStation": val,
-        "monPaxType": 1,
-        "monPaxYcValue": faker.datatype.number({ min: 50, max: 300 })
+        monPaxStation: val,
+        monPaxType: 1,
+        monPaxYcValue: faker.datatype.number({ min: 50, max: 300 })
       }
       data.monPaxData.push(data1, data2)
     })
@@ -172,21 +172,20 @@ wsPublic.on('connection', (ws) => {
     //推送变化值
     const staitonsFlowTimer = setInterval(() => {
       const newData = {
-        monPaxData: [
-        ]
+        monPaxData: []
       }
       const index = Random.natural(0, 1)
       const index2 = Random.natural(2, 3)
 
       const data1 = {
-        "monPaxStation": stationArr[index],
-        "monPaxType": Random.natural(0, 1),
-        "monPaxYcValue": faker.datatype.number({ min: 50, max: 300 })
+        monPaxStation: stationArr[index],
+        monPaxType: Random.natural(0, 1),
+        monPaxYcValue: faker.datatype.number({ min: 50, max: 300 })
       }
       const data2 = {
-        "monPaxStation": stationArr[index2],
-        "monPaxType": Random.natural(0, 1),
-        "monPaxYcValue": faker.datatype.number({ min: 50, max: 300 })
+        monPaxStation: stationArr[index2],
+        monPaxType: Random.natural(0, 1),
+        monPaxYcValue: faker.datatype.number({ min: 50, max: 300 })
       }
       newData.monPaxData.push(data1, data2)
       ws.send(JSON.stringify(newData), (err) => {
@@ -247,9 +246,8 @@ wsPublic.on('connection', (ws) => {
   }
   inout()
 
-
   ws.on('message', (message) => {
-    console.log('staitonsDev received: %s', message)
+    console.log('9484 staitonsDev received: %s', message)
     const devHealthTypeData = {
       devHealthTypeData: [
         {
@@ -325,7 +323,7 @@ wsPublic.on('connection', (ws) => {
           devHealthState: [
             {
               devHealthStateDesc: '正常',
-              devHealthStateValue: 0,
+              devHealthStateValue: 0
             },
             {
               devHealthStateDesc: '故障',
@@ -351,7 +349,7 @@ wsPublic.on('connection', (ws) => {
           devHealthState: [
             {
               devHealthStateDesc: '开启',
-              devHealthStateValue: 0,
+              devHealthStateValue: 0
             },
             {
               devHealthStateDesc: '关闭',
@@ -473,144 +471,6 @@ wsPublic.on('connection', (ws) => {
   })
 })
 
-// 报警
-// deleteAlarmData
-// updateAlarmData
-// addAlarmData
-// initAlarmData
-alarm.on('connection', (ws) => {
-  let count = Random.natural(7, 13)
-  let res = {
-    initAlarmData: []
-  }
-  for (let index = 0; index <= count; index++) {
-    const obj = Mock.mock({
-      alarmId: index,
-      // ymd: Random.date('yyyy-MM-dd'),
-      // hmsms: Random.time(),
-      ymd: Random.date('yyyyMMdd'),
-      hmsms: 162412333,
-      alarmlevel: Random.natural(1, 3),
-      'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
-      tonetimes: '语音报警次数', //暂时未用到
-      equipmentid: sxlList[index] + '',
-      station_desc: '渌水道站',
-      'system_name|1': ['PIS', 'AFC', 'DQHZ', 'PA', 'BAS', 'ACS', 'PSD', 'FG'],
-      'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
-      member_name0: '成员名', //暂时未用到
-      char_info: '宇视系统IABA:109VC-上行尾' + index,
-      tone_info: '事件语音内容', //暂时未用到
-      'cameraGrp|0-4': ['34020000001320000003', '34020000001320000003', '34020000001320000003', '34020000001320000003'] //摄像机组名
-    })
-
-    res.initAlarmData.push(obj)
-  }
-  ws.send(JSON.stringify(res))
-  ws.on('message', (message) => {
-    console.log('alarm received: %s', message)
-    // 更新
-    if (JSON.parse(message).alarmidlist) {
-      const idList = JSON.parse(message).alarmidlist
-      idList.forEach((val) => {
-        let updateIndex = res.initAlarmData.findIndex((data) => data.alarmId === val)
-        let updateObj = res.initAlarmData[updateIndex]
-        updateObj.alarmstate = 5
-        let update = {
-          updateAlarmData: updateObj
-        }
-        ws.send(JSON.stringify(update), (err) => {
-          if (err) {
-            ws.close()
-          }
-        })
-      })
-    }
-  })
-  //推送变化值
-  try {
-    const alarmTimer = setInterval(() => {
-      if (count < sxlList.length) count++
-      // 新增
-      let add = {
-        addAlarmData: Mock.mock({
-          alarmId: count,
-          ymd: Random.date('yyyyMMdd'),
-          hmsms: 162412333,
-          alarmlevel: Random.natural(1, 3),
-          'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
-          tonetimes: '语音报警次数', //暂时未用到
-          equipmentid: sxlList[count] + '',
-          station_desc: '渌水道站',
-          'system_name|1': ['FAS', 'AFC', 'CCTV'],
-          'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
-          member_name0: '成员名', //暂时未用到
-          char_info: '宇视系统IABA:109VC-上行尾' + count,
-          tone_info: '事件语音内容', //暂时未用到
-          'cameraGrp|0-4': ['34020000001320000003', '34020000001320000003', '34020000001320000003', '34020000001320000003'] //摄像机组名
-        })
-      }
-      // console.log(res)
-      res.initAlarmData.push(add.addAlarmData)
-      ws.send(JSON.stringify(add), (err) => {
-        if (err) {
-          clearInterval(alarmTimer)
-          ws.close()
-        }
-      })
-      // 更新
-      let updateIndex = Random.natural(0, res.initAlarmData.length - 1)
-      let updateObj = res.initAlarmData[updateIndex]
-      updateObj.char_info = '更新了' + count
-      let update = {
-        updateAlarmData: updateObj
-      }
-      ws.send(JSON.stringify(update), (err) => {
-        if (err) {
-          clearInterval(alarmTimer)
-          ws.close()
-        }
-      })
-      // 删除
-      let delIndex = Random.natural(0, res.initAlarmData.length - 1)
-      let del = {
-        deleteAlarmData: res.initAlarmData[delIndex]
-      }
-      res.initAlarmData.splice(delIndex, 1)
-      ws.send(JSON.stringify(del), (err) => {
-        if (err) {
-          clearInterval(alarmTimer)
-          ws.close()
-        }
-      })
-      // 事件
-      let event = {
-        EventData: [
-          Mock.mock({
-            ymd: Random.date('yyyyMMdd'),
-            hmsms: 162412333,
-            alarmlevel: Random.natural(0, 3),
-            'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
-            tonetimes: '语音报警次数', //暂时未用到
-            station_desc: '渌水道站',
-            'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
-            member_name0: '成员名', //暂时未用到
-            char_info: '电伴热DBR_s_032号回路系统运行/停止状态',
-            tone_info: '事件语音内容' //暂时未用到
-          })
-        ]
-      }
-      ws.send(JSON.stringify(event), (err) => {
-        if (err) {
-          clearInterval(alarmTimer)
-          ws.close()
-        }
-      })
-    }, 5000)
-  } catch (error) {
-    console.log(error)
-  }
-})
-
 // 推送ws
 pushWs.on('connection', (ws) => {
   // 设备查看
@@ -619,16 +479,16 @@ pushWs.on('connection', (ws) => {
       monDevPoiData: []
     }
 
-    const devArr = ['AMG01', 'AMG02', 'AMG03', 'AMG04', 'AMG05', 'AMG06', '电梯1', '电梯2']
+    const devArr = ['AGM01', 'AGM02', 'AGM03', 'AGM04', 'AGM05', 'AGM06', '电梯1', '电梯2']
     const arr2 = [0, 1, 2, 3]
     arr2.forEach((val) => {
       devArr.forEach((v, k) => {
         const obj = Mock.mock({
-          "monDevId": v,
-          "monDevYxAlarmFlag|1": [0, 1], //1:报警  0：正常
-          "monDevYxName": "设备遥信名" + val + k,
-          "monDevYxDesc": "遥信描述" + val + k,
-          "monDevYxStateDesc": "遥信状态描述" + val + k
+          monDevId: v,
+          'monDevYxAlarmFlag|1': [0, 1], //1:报警  0：正常
+          monDevYxName: '设备遥信名' + val + k,
+          monDevYxDesc: '遥信描述' + val + k,
+          monDevYxStateDesc: '遥信状态描述' + val + k
         })
         data.monDevPoiData.push(obj)
       })
@@ -636,98 +496,100 @@ pushWs.on('connection', (ws) => {
     ws.send(JSON.stringify(data))
   }
   const data0 = {
-    "monDevPoiData": [
+    monDevPoiData: [
       {
-        "monDevId": "AMG01",
-        "monDevYxAlarmFlag": 1,
-        "monDevYxName": "dmaf.--2233.St",
-        "monDevYxDesc": "站厅自动检票机AGM10回收票箱1容量",
-        "monDevYxStateDesc": "将满"
+        monDevId: 'AGM01',
+        monDevYxAlarmFlag: 1,
+        monDevYxName: 'dmaf.--2233.St',
+        monDevYxDesc: '站厅自动检票机AGM10回收票箱1容量',
+        monDevYxStateDesc: '将满'
       },
       {
-        "monDevId": "AMG01",
-        "monDevYxAlarmFlag": 1,
-        "monDevYxName": "dmaf.--2234.St",
-        "monDevYxDesc": "站厅自动检票机AGM10回收票箱2容量",
-        "monDevYxStateDesc": "将满"
+        monDevId: 'AGM01',
+        monDevYxAlarmFlag: 1,
+        monDevYxName: 'dmaf.--2234.St',
+        monDevYxDesc: '站厅自动检票机AGM10回收票箱2容量',
+        monDevYxStateDesc: '将满'
       },
       {
-        "monDevId": "AMG01",
-        "monDevYxAlarmFlag": 0,
-        "monDevYxName": "dmaf.--2274.St",
-        "monDevYxDesc": "站厅自动检票机AGM10通信状态",
-        "monDevYxStateDesc": "正常"
+        monDevId: 'AGM01',
+        monDevYxAlarmFlag: 0,
+        monDevYxName: 'dmaf.--2274.St',
+        monDevYxDesc: '站厅自动检票机AGM10通信状态',
+        monDevYxStateDesc: '正常'
+      },
+      {
+        monDevId: 'LCD-T-01',
+        monDevYxAlarmFlag: 0,
+        monDevYxName: 'dmaf.--2274.St',
+        monDevYxDesc: '站厅PIS屏LCD-T-01通信状态',
+        monDevYxStateDesc: '不正常'
       }
     ]
   }
   ws.send(JSON.stringify(data0))
   const data1 = {
-    "monDevPoiData": [
+    monDevPoiData: [
       {
-        "monDevId": "AMG01",
-        "monDevYxAlarmFlag": 1,
-        "monDevYxName": "dmaf.--2274.St",
-        "monDevYxDesc": "站厅自动检票机AGM10通信状态",
-        "monDevYxStateDesc": "正常"
+        monDevId: 'AGM01',
+        monDevYxAlarmFlag: 1,
+        monDevYxName: 'dmaf.--2274.St',
+        monDevYxDesc: '站厅自动检票机AGM10通信状态',
+        monDevYxStateDesc: '正常'
       }
     ]
   }
 
   // 设备状态三维显示
   const devStatusData = {
-    "monDevData": [
-      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 1 },
-      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 1 },
-      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 2 },
-      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 2 },
-      { "monDevId": "AMG01", "monDevYxValue": 2, "monDevDispPolicy": 2 },
-      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 3 },
-      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 3 },
-      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 4 },
-      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 4 },
-      { "monDevId": "AMG01", "monDevYxValue": 0, "monDevDispPolicy": 5 },
-      { "monDevId": "AMG01", "monDevYxValue": 1, "monDevDispPolicy": 5 },
-      { "monDevId": "ASD216", "monDevYxValue": 0, "monDevDispPolicy": 6 },
-      { "monDevId": "ASD216", "monDevYxValue": 1, "monDevDispPolicy": 6 },
-      { "monDevId": "ASD216", "monDevYxValue": 0, "monDevDispPolicy": 7 },
-      { "monDevId": "ASD216", "monDevYxValue": 1, "monDevDispPolicy": 7 },
-      { "monDevId": "ASD2", "monDevYxValue": 0, "monDevDispPolicy": 8 },
-      { "monDevId": "ASD2", "monDevYxValue": 1, "monDevDispPolicy": 8 },
-      { "monDevId": "ASD2", "monDevYxValue": 0, "monDevDispPolicy": 9 },
-      { "monDevId": "ASD2", "monDevYxValue": 1, "monDevDispPolicy": 9 },
-      { "monDevId": "MSD1_1", "monDevYxValue": 0, "monDevDispPolicy": 10 },
-      { "monDevId": "MSD1_1", "monDevYxValue": 1, "monDevDispPolicy": 10 },
-      { "monDevId": "ASD2", "monDevYxValue": 0, "monDevDispPolicy": 11 },
-      { "monDevId": "ASD2", "monDevYxValue": 1, "monDevDispPolicy": 11 },
-      { "monDevId": "ASD216", "monDevYxValue": 0, "monDevDispPolicy": 12 },
-      { "monDevId": "ASD216", "monDevYxValue": 1, "monDevDispPolicy": 12 },
-      { "monDevId": "ASD216", "monDevYxValue": 0, "monDevDispPolicy": 13 },
-      { "monDevId": "ASD216", "monDevYxValue": 1, "monDevDispPolicy": 13 },
-      { "monDevId": "电梯15", "monDevYxValue": 0, "monDevDispPolicy": 14 },
-      { "monDevId": "电梯15", "monDevYxValue": 1, "monDevDispPolicy": 14 },
-      { "monDevId": "电梯15", "monDevYxValue": 2, "monDevDispPolicy": 14 },
-      { "monDevId": "电梯15", "monDevYxValue": 4, "monDevDispPolicy": 14 },
-      { "monDevId": "电梯15", "monDevYxValue": 0, "monDevDispPolicy": 15 },
-      { "monDevId": "电梯15", "monDevYxValue": 1, "monDevDispPolicy": 15 },
-      { "monDevId": "电梯15", "monDevYxValue": 0, "monDevDispPolicy": 16 },
-      { "monDevId": "电梯15", "monDevYxValue": 1, "monDevDispPolicy": 16 },
-      { "monDevId": "电梯15", "monDevYxValue": 0, "monDevDispPolicy": 17 },
-      { "monDevId": "电梯15", "monDevYxValue": 1, "monDevDispPolicy": 17 },
-      { "monDevId": "电梯15", "monDevYxValue": 2, "monDevDispPolicy": 17 },
-      { "monDevId": "直梯1", "monDevYxValue": 0, "monDevDispPolicy": 18 },
-      { "monDevId": "直梯1", "monDevYxValue": 1, "monDevDispPolicy": 18 },
-      { "monDevId": "PIS001", "monDevYxValue": 0, "monDevDispPolicy": 19 },
-      { "monDevId": "PIS001", "monDevYxValue": 1, "monDevDispPolicy": 19 },
-      { "monDevId": "PIS001", "monDevYxValue": 0, "monDevDispPolicy": 20 },
-      { "monDevId": "PIS001", "monDevYxValue": 1, "monDevDispPolicy": 20 },
-      { "monDevId": "卷帘门01", "monDevYxValue": 0, "monDevDispPolicy": 21 },
-      { "monDevId": "卷帘门01", "monDevYxValue": 1, "monDevDispPolicy": 21 },
-      { "monDevId": "卷帘门01", "monDevYxValue": 0, "monDevDispPolicy": 22 },
-      { "monDevId": "卷帘门01", "monDevYxValue": 1, "monDevDispPolicy": 22 },
-      { "monDevId": "Z04-DDF-A1", "monDevYxValue": 0, "monDevDispPolicy": 23 },
-      { "monDevId": "Z04-DDF-A1", "monDevYxValue": 1, "monDevDispPolicy": 23 },
-      { "monDevId": "Z04-DDF-A1", "monDevYxValue": 0, "monDevDispPolicy": 24 },
-      { "monDevId": "Z04-DDF-A1", "monDevYxValue": 1, "monDevDispPolicy": 24 }
+    monDevData: [
+      { monDevId: 'AGM01', monDevYxValue: 1, monDevDispPolicy: 1 },
+      { monDevId: 'AGM01', monDevYxValue: 0, monDevDispPolicy: 1 },
+      { monDevId: 'AGM01', monDevYxValue: 0, monDevDispPolicy: 2 },
+      { monDevId: 'AGM01', monDevYxValue: 1, monDevDispPolicy: 2 },
+      { monDevId: 'AGM01', monDevYxValue: 2, monDevDispPolicy: 2 },
+      { monDevId: 'AGM01', monDevYxValue: 0, monDevDispPolicy: 3 },
+      { monDevId: 'AGM01', monDevYxValue: 1, monDevDispPolicy: 3 },
+      { monDevId: 'AGM01', monDevYxValue: 0, monDevDispPolicy: 4 },
+      { monDevId: 'AGM01', monDevYxValue: 1, monDevDispPolicy: 4 },
+      { monDevId: 'AGM01', monDevYxValue: 0, monDevDispPolicy: 5 },
+      { monDevId: 'AGM01', monDevYxValue: 1, monDevDispPolicy: 5 },
+      { monDevId: 'ASD216', monDevYxValue: 0, monDevDispPolicy: 6 },
+      { monDevId: 'ASD216', monDevYxValue: 1, monDevDispPolicy: 6 },
+      { monDevId: 'ASD216', monDevYxValue: 0, monDevDispPolicy: 7 },
+      { monDevId: 'ASD216', monDevYxValue: 1, monDevDispPolicy: 7 },
+      { monDevId: 'MSD1_1', monDevYxValue: 0, monDevDispPolicy: 10 },
+      { monDevId: 'MSD1_1', monDevYxValue: 1, monDevDispPolicy: 10 },
+      { monDevId: 'ASD216', monDevYxValue: 0, monDevDispPolicy: 12 },
+      { monDevId: 'ASD216', monDevYxValue: 1, monDevDispPolicy: 12 },
+      { monDevId: 'ASD216', monDevYxValue: 0, monDevDispPolicy: 13 },
+      { monDevId: 'ASD216', monDevYxValue: 1, monDevDispPolicy: 13 },
+      { monDevId: '电梯15', monDevYxValue: 0, monDevDispPolicy: 14 },
+      { monDevId: '电梯15', monDevYxValue: 1, monDevDispPolicy: 14 },
+      { monDevId: '电梯15', monDevYxValue: 2, monDevDispPolicy: 14 },
+      { monDevId: '电梯15', monDevYxValue: 4, monDevDispPolicy: 14 },
+      { monDevId: '电梯15', monDevYxValue: 0, monDevDispPolicy: 15 },
+      { monDevId: '电梯15', monDevYxValue: 1, monDevDispPolicy: 15 },
+      { monDevId: '电梯15', monDevYxValue: 0, monDevDispPolicy: 16 },
+      { monDevId: '电梯15', monDevYxValue: 1, monDevDispPolicy: 16 },
+      { monDevId: '电梯15', monDevYxValue: 0, monDevDispPolicy: 17 },
+      { monDevId: '电梯15', monDevYxValue: 1, monDevDispPolicy: 17 },
+      { monDevId: '电梯15', monDevYxValue: 2, monDevDispPolicy: 17 },
+      { monDevId: '直梯01', monDevYxValue: 0, monDevDispPolicy: 18 },
+      { monDevId: '直梯01', monDevYxValue: 1, monDevDispPolicy: 18 },
+      { monDevId: 'LCD-T-01', monDevYxValue: 0, monDevDispPolicy: 19 },
+      { monDevId: 'LCD-T-02', monDevYxValue: 1, monDevDispPolicy: 19 },
+      { monDevId: 'LCD-T-03', monDevYxValue: 2, monDevDispPolicy: 20 },
+      { monDevId: 'LCD-T-04', monDevYxValue: 3, monDevDispPolicy: 20 },
+      { monDevId: '卷帘门01', monDevYxValue: 0, monDevDispPolicy: 21 },
+      { monDevId: '卷帘门01', monDevYxValue: 1, monDevDispPolicy: 21 },
+      { monDevId: '卷帘门01', monDevYxValue: 0, monDevDispPolicy: 22 },
+      { monDevId: '卷帘门01', monDevYxValue: 1, monDevDispPolicy: 22 },
+      { monDevId: 'Z04-DDF-A1', monDevYxValue: 0, monDevDispPolicy: 23 },
+      { monDevId: 'Z04-DDF-A1', monDevYxValue: 1, monDevDispPolicy: 23 },
+      { monDevId: 'Z04-DDF-A1', monDevYxValue: 0, monDevDispPolicy: 24 },
+      { monDevId: 'Z04-DDF-A1', monDevYxValue: 1, monDevDispPolicy: 24 },
+      { monDevId: '出入口_5', monDevYxValue: 0, monDevDispPolicy: 25 }
     ]
   }
   setInterval(() => {
@@ -737,6 +599,9 @@ pushWs.on('connection', (ws) => {
     ws.send(JSON.stringify(devStatusData))
     ws.send(JSON.stringify(data1))
   }, 6000)
+  ws.on('message', (message) => {
+    console.log('9485 received: %s', message)
+  })
 })
 // 自动巡检ws
 patrol.on('connection', (ws) => {
@@ -750,7 +615,7 @@ patrol.on('connection', (ws) => {
       }
     }
     ws.send(JSON.stringify(result))
-    console.log(result);
+    // console.log(result);
     const planPush = () => {
       console.log('应急预案push')
       let res = {
@@ -759,8 +624,13 @@ patrol.on('connection', (ws) => {
         emgPlanDesc: '应急预案描述' + 1,
         emgPlanType: '应急预案类型' + 1,
         emgPlanInfo: '应急预案内容' + 1,
-        cameraGrp: ['34020000001320000001', '34020000001320000002', '34020000001320000003', '34020000001320000003', '34020000001320000003']
-
+        cameraGrp: [
+          '34020000001320000001',
+          '34020000001320000002',
+          '34020000001320000003',
+          '34020000001320000003',
+          '34020000001320000003'
+        ]
       }
       res = JSON.stringify(res)
       ws.send(res, (err) => {
@@ -770,8 +640,90 @@ patrol.on('connection', (ws) => {
         }
       })
     }
+    const patrolPush = () => {
+      const data = {
+        trigType: 0,
+        patrolFuncName: '20230911095238364',
+        patrolDesc: '巡检1号',
+        patrolNodeList: [
+          {
+            id: 'node0',
+            position: {
+              x: 92.2796096801758,
+              y: -20.5573348999023,
+              z: -486.839996337891
+            }
+          },
+          {
+            id: 'node2',
+            position: {
+              x: -5.03,
+              y: 20.57,
+              z: 523.56
+            }
+          },
+          {
+            id: 'node3',
+            position: {
+              x: 6.85,
+              y: 20.57,
+              z: 527.23
+            }
+          },
+          {
+            id: 'node4',
+            position: {
+              x: 20.03,
+              y: 20.57,
+              z: 525.25
+            }
+          },
+          {
+            id: 'node5',
+            position: {
+              x: 31.95,
+              y: 20.57,
+              z: 523.1
+            }
+          },
+          {
+            id: 'node6',
+            position: {
+              x: 18.13,
+              y: 20.57,
+              z: 515.57
+            }
+          },
+          {
+            id: 'node7',
+            position: {
+              x: 5.08,
+              y: 20.57,
+              z: 511.34
+            }
+          },
+          {
+            id: 'node8',
+            position: {
+              x: 2.79,
+              y: 20.57,
+              z: 519.35
+            }
+          }
+        ]
+      }
+      res = JSON.stringify(data)
+      ws.send(res, (err) => {
+        if (err) {
+          // if (patrolTimer) clearInterval(patrolTimer)
+          ws.close()
+        }
+      })
+    }
+
     // 预案推送
     // planPush()
+    // patrolPush()
   }, 2000)
   const ykObj = Mock.mock({
     devYxName: guid(),
@@ -866,214 +818,214 @@ envMonitor.on('connection', (ws) => {
         // }
         res.data = [
           {
-            "monitorEnvDevId": "温度传感器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 30
+            monitorEnvDevId: '温度传感器3',
+            Floor: '站厅层',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 30
           },
           {
-            "monitorEnvDevId": "温度传感器4",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 0
+            monitorEnvDevId: '温度传感器4',
+            Floor: '站厅层',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器1',
+            Floor: '站厅层',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "温度传感器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 0
+            monitorEnvDevId: '温度传感器2',
+            Floor: '站厅层',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "CO2传感器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "CO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'CO2传感器1',
+            Floor: '站厅层',
+            envNameTypeDesc: 'CO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器3',
+            Floor: '站厅层',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "温度传感器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 0
+            monitorEnvDevId: '温度传感器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器2',
+            Floor: '站厅层',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "温度传感器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "温度",
-            "envNameTypeUnit": "℃",
-            "monitorYcValue": 0
+            monitorEnvDevId: '温度传感器1',
+            Floor: '站厅层',
+            envNameTypeDesc: '温度',
+            envNameTypeUnit: '℃',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "湿度传感器4",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "湿度",
-            "envNameTypeUnit": "%rh",
-            "monitorYcValue": 0
+            monitorEnvDevId: '湿度传感器4',
+            Floor: '站厅层',
+            envNameTypeDesc: '湿度',
+            envNameTypeUnit: '%rh',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器2',
+            Floor: '站厅层',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器4",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器4',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器3',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器6",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器6',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 40
+            monitorEnvDevId: 'PM10探测器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 40
           },
           {
-            "monitorEnvDevId": "PM10探测器4",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器4',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器1',
+            Floor: '站厅层',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器1',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器5",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器5',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器1",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器1',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器2',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器3',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器7",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器7',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器2",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM10探测器2',
+            Floor: '站厅层',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM2.5探测器6",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM2.5",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: 'PM2.5探测器6',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM2.5',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "PM10探测器7",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "PM10",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 600
+            monitorEnvDevId: 'PM10探测器7',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'PM10',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 600
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器4",
-            "Floor": "8号线站台",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器4',
+            Floor: '8号线站台',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           },
           {
-            "monitorEnvDevId": "二氧化硫探测器3",
-            "Floor": "站厅层",
-            "envNameTypeDesc": "SO2",
-            "envNameTypeUnit": "PPM",
-            "monitorYcValue": 0
+            monitorEnvDevId: '二氧化硫探测器3',
+            Floor: '站厅层',
+            envNameTypeDesc: 'SO2',
+            envNameTypeUnit: 'PPM',
+            monitorYcValue: 0
           }
         ]
         res.data.forEach((val, key) => {
@@ -1104,7 +1056,7 @@ envMonitor.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 testUnity.on('connection', (ws) => {
-  const devArr = ['AMG01', 'AMG02', 'AMG03', 'AMG04', 'AMG05', 'AMG06', '电梯1', '电梯2']
+  const devArr = ['AGM01', 'AGM02', 'AGM03', 'AGM04', 'AGM05', 'AGM06', '电梯1', '电梯2']
   let res = {
     initAlarmData: []
   }
@@ -1116,14 +1068,14 @@ testUnity.on('connection', (ws) => {
       alarmlevel: Random.natural(1, 1),
       'alarmstate|1': [1, 2, 3], //报警、事故、恢复、已确认
       tonetimes: '语音报警次数', //暂时未用到
-      'equipmentid|1': ['AMG01', 'AMG02', 'AMG03', 'AMG04', 'AMG05', 'AMG06', '电梯1', '电梯2'],
+      'equipmentid|1': ['AGM01', 'AGM02', 'AGM03', 'AGM04', 'AGM05', 'AGM06', '电梯1', '电梯2'],
       station_desc: '渌水道站',
       'system_name|1': ['PIS', 'AFC', 'DQHZ', 'PA', 'BAS', 'ACS', 'PSD', 'FG'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       member_name0: '成员名', //暂时未用到
       char_info: '宇视系统IABA:109VC-上行尾|||' + index,
       tone_info: '事件语音内容', //暂时未用到
-      'cameraGrp': ['34020000001320000003', '34020000001320000003', '34020000001320000003', '34020000001320000003'] //摄像机组名
+      cameraGrp: ['34020000001320000003', '34020000001320000003', '34020000001320000003', '34020000001320000003'] //摄像机组名
     })
 
     res.initAlarmData.push(obj)
@@ -1152,74 +1104,74 @@ testUnity.on('connection', (ws) => {
   })
 
   const data1 = {
-    "initAlarmData": [
+    initAlarmData: [
       {
-        "alarmId": 61,
-        "ymd": 20231024,
-        "hmsms": 113108919,
-        "alarmlevel": 1,
-        "alarmstate": 2,
-        "tonetimes": 0,
-        "equipmentid": "电梯5",
-        "station_desc": "",
-        "system_name": "SOM",
-        "system_desc": "智慧车站",
-        "member_name0": "dmsm.--1316.St",
-        "char_info": "                 扶梯自动扶梯0204-E03(N)扶梯故障 |||正常",
-        "tone_info": "一级报警.wav",
-        "cameraGrp": []
+        alarmId: 61,
+        ymd: 20231024,
+        hmsms: 113108919,
+        alarmlevel: 1,
+        alarmstate: 2,
+        tonetimes: 0,
+        equipmentid: '电梯5',
+        station_desc: '',
+        system_name: 'SOM',
+        system_desc: '智慧车站',
+        member_name0: 'dmsm.--1316.St',
+        char_info: '                 扶梯自动扶梯0204-E03(N)扶梯故障 |||正常',
+        tone_info: '一级报警.wav',
+        cameraGrp: []
       },
       {
-        "alarmId": 63,
-        "ymd": 20231024,
-        "hmsms": 112054285,
-        "alarmlevel": 1,
-        "alarmstate": 4,
-        "tonetimes": 0,
-        "equipmentid": "电梯6",
-        "station_desc": "",
-        "system_name": "SOM",
-        "system_desc": "智慧车站",
-        "member_name0": "dmsm.--1329.St",
-        "char_info": "                 扶梯自动扶梯0204-E04(N)扶梯故障 |||正常",
-        "tone_info": "",
-        "cameraGrp": []
+        alarmId: 63,
+        ymd: 20231024,
+        hmsms: 112054285,
+        alarmlevel: 1,
+        alarmstate: 4,
+        tonetimes: 0,
+        equipmentid: '电梯6',
+        station_desc: '',
+        system_name: 'SOM',
+        system_desc: '智慧车站',
+        member_name0: 'dmsm.--1329.St',
+        char_info: '                 扶梯自动扶梯0204-E04(N)扶梯故障 |||正常',
+        tone_info: '',
+        cameraGrp: []
       }
     ]
   }
   const data2 = {
-    "initAlarmData": [
+    initAlarmData: [
       {
-        "alarmId": 61,
-        "ymd": 20231024,
-        "hmsms": 113126469,
-        "alarmlevel": 1,
-        "alarmstate": 4,
-        "tonetimes": 0,
-        "equipmentid": "电梯5",
-        "station_desc": "",
-        "system_name": "SOM",
-        "system_desc": "智慧车站",
-        "member_name0": "dmsm.--1316.St",
-        "char_info": "                 扶梯自动扶梯0204-E03(N)扶梯故障 |||正常",
-        "tone_info": "",
-        "cameraGrp": []
+        alarmId: 61,
+        ymd: 20231024,
+        hmsms: 113126469,
+        alarmlevel: 1,
+        alarmstate: 4,
+        tonetimes: 0,
+        equipmentid: '电梯5',
+        station_desc: '',
+        system_name: 'SOM',
+        system_desc: '智慧车站',
+        member_name0: 'dmsm.--1316.St',
+        char_info: '                 扶梯自动扶梯0204-E03(N)扶梯故障 |||正常',
+        tone_info: '',
+        cameraGrp: []
       },
       {
-        "alarmId": 63,
-        "ymd": 20231024,
-        "hmsms": 112054285,
-        "alarmlevel": 1,
-        "alarmstate": 4,
-        "tonetimes": 0,
-        "equipmentid": "电梯6",
-        "station_desc": "",
-        "system_name": "SOM",
-        "system_desc": "智慧车站",
-        "member_name0": "dmsm.--1329.St",
-        "char_info": "                 扶梯自动扶梯0204-E04(N)扶梯故障 |||正常",
-        "tone_info": "",
-        "cameraGrp": []
+        alarmId: 63,
+        ymd: 20231024,
+        hmsms: 112054285,
+        alarmlevel: 1,
+        alarmstate: 4,
+        tonetimes: 0,
+        equipmentid: '电梯6',
+        station_desc: '',
+        system_name: 'SOM',
+        system_desc: '智慧车站',
+        member_name0: 'dmsm.--1329.St',
+        char_info: '                 扶梯自动扶梯0204-E04(N)扶梯故障 |||正常',
+        tone_info: '',
+        cameraGrp: []
       }
     ]
   }
@@ -1237,7 +1189,7 @@ testUnity.on('connection', (ws) => {
           // 'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
           system_desc: '环控BAS',
           member_name0: '成员名', //暂时未用到
-          char_info: '电伴热DBR_s_032号回路系统运行/停止状态',
+          char_info: '电伴热DBR_s_032号回路系统运行/停止状态' + Random.natural(100, 500) + '|||状态',
           tone_info: '事件语音内容' //暂时未用到
         })
       ]
@@ -1289,7 +1241,7 @@ controlWs.on('connection', (ws) => {
         // 执行追踪
         let msg = {
           funcType: 1,
-          opResInfo: "控制输出下发.....",
+          opResInfo: '控制输出下发.....',
           resultType: 4
         }
         ws.send(JSON.stringify(msg), (err) => {
@@ -1310,6 +1262,19 @@ controlWs.on('connection', (ws) => {
             }
           })
         }, 1000)
+        setTimeout(() => {
+          // 更新
+          let result = {
+            funcType: 1,
+            opResInfo: '',
+            resultType: 127
+          }
+          ws.send(JSON.stringify(result), (err) => {
+            if (err) {
+              ws.close()
+            }
+          })
+        }, 1800)
         break
       case 2:
         const msgArr2 = {
@@ -1320,11 +1285,11 @@ controlWs.on('connection', (ws) => {
           126: '模拟量输出命令错误',
           127: ''
         }
-        const index2 = Random.natural(0, 3)
+        const index2 = Random.natural(1, 3)
         // 执行追踪
         let msg2 = {
           funcType: 2,
-          opResInfo: "执行...",
+          opResInfo: '执行...',
           resultType: 0
         }
         ws.send(JSON.stringify(msg2), (err) => {
@@ -1360,6 +1325,12 @@ controlWs.on('connection', (ws) => {
         }, 1500)
         break
     }
+  })
+})
 
+// 智慧照明
+lightWs.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    console.log('9487 received: %s', message)
   })
 })
