@@ -528,6 +528,95 @@ pushWs.on('connection', (ws) => {
     ]
   }
   ws.send(JSON.stringify(data0))
+  // 环境检测
+  const envData = {
+    monEnvData: [
+      {
+        monEnvAreaId: 'CH-05',
+        monEnvAreaDesc: '站厅公共区1',
+        monEnvRtData: [
+          {
+            monEnvType: 1,
+            monEnvYcValue: 10.0,
+            monEnvLimitLevel: 2
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 20.0,
+            monEnvLimitLevel: 2
+          },
+          {
+            monEnvType: 2,
+            monEnvYcValue: 10.0,
+            monEnvLimitLevel: 2
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-06',
+        monEnvAreaDesc: '站厅公共区1',
+        monEnvRtData: [
+          {
+            monEnvType: 1,
+            monEnvYcValue: 10.0,
+            monEnvLimitLevel: 2
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 20.0,
+            monEnvLimitLevel: 2
+          },
+          {
+            monEnvType: 2,
+            monEnvYcValue: 10.0,
+            monEnvLimitLevel: 2
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-07',
+        monEnvAreaDesc: '站厅公共区1',
+        monEnvRtData: [
+          {
+            monEnvType: 1,
+            monEnvYcValue: 10.0,
+            monEnvLimitLevel: 2
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 20.0,
+            monEnvLimitLevel: 2
+          },
+          {
+            monEnvType: 2,
+            monEnvYcValue: 10.0,
+            monEnvLimitLevel: 2
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-08',
+        monEnvAreaDesc: '站厅公共区1',
+        monEnvRtData: [
+          {
+            monEnvType: 1,
+            monEnvYcValue: 10.0,
+            monEnvLimitLevel: 2
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 20.0,
+            monEnvLimitLevel: 2
+          },
+          {
+            monEnvType: 2,
+            monEnvYcValue: 10.0,
+            monEnvLimitLevel: 2
+          }
+        ]
+      }
+    ]
+  }
   const data1 = {
     monDevPoiData: [
       {
@@ -535,13 +624,101 @@ pushWs.on('connection', (ws) => {
         monDevYxAlarmFlag: 1,
         monDevYxName: 'dmaf.--2274.St',
         monDevYxDesc: '站厅自动检票机AGM10通信状态',
-        monDevYxStateDesc: '正常'
+        monDevYxStateDesc: '异常'
+      }
+    ]
+  }
+
+  const fire = {
+    monFireData: [
+      {
+        monFireAreaId: '第一防烟分区',
+        monFireType: 2
+      },
+      {
+        monFireAreaId: '第二防烟分区',
+        monFireType: 2
+      },
+      // {
+      //   monFireAreaId: '第三防烟分区',
+      //   monFireType: 2
+      // },
+      // {
+      //   monFireAreaId: '第四防烟分区',
+      //   monFireType: 2
+      // },
+      {
+        monFireAreaId: '第五防烟分区',
+        monFireType: 2
+      },
+      {
+        monFireAreaId: '第六防烟分区',
+        monFireType: 2
+      }
+    ]
+  }
+
+  const roomFire = {
+    monFireRoom: [
+      {
+        fireRoomDesc: '变配电室',
+        roomFireFlag: 1,
+        roomFireAreaId: '第一防烟分区',
+        cameraGrp: ['34020000001320000001']
+      },
+      {
+        fireRoomDesc: '通风空调电控室',
+        roomFireFlag: 0,
+        roomFireAreaId: '第六防烟分区',
+        cameraGrp: ['34020000001320000171']
+      },
+      {
+        fireRoomDesc: '商用通信设备室',
+        roomFireFlag: 0,
+        roomFireAreaId: '第五防烟分区',
+        cameraGrp: ['34020000001320000161']
+      },
+      {
+        fireRoomDesc: '专用通信设备室',
+        roomFireFlag: 0,
+        roomFireAreaId: '第五防烟分区',
+        cameraGrp: ['34020000001320000171']
+      },
+      {
+        fireRoomDesc: '弱电综合电源室',
+        roomFireFlag: 0,
+        roomFireAreaId: '第五防烟分区',
+        cameraGrp: ['34020000001320000001']
+      },
+      {
+        fireRoomDesc: '综合监控设备室',
+        roomFireFlag: 0,
+        roomFireAreaId: '第五防烟分区',
+        cameraGrp: ['34020000001320000161']
+      },
+      {
+        fireRoomDesc: '信号设备室',
+        roomFireFlag: 0,
+        roomFireAreaId: '第五防烟分区',
+        cameraGrp: ['34020000001320000171']
+      },
+      {
+        fireRoomDesc: '警用通信设备室',
+        roomFireFlag: 0,
+        roomFireAreaId: '第一防烟分区',
+        cameraGrp: ['34020000001320000162']
+      },
+      {
+        fireRoomDesc: '通风空调电控室',
+        roomFireFlag: 0,
+        roomFireAreaId: '第二防烟分区',
+        cameraGrp: ['34020000001320000001']
       }
     ]
   }
 
   // 设备状态三维显示
-  const devStatusData = {
+  const devStatusData2 = {
     monDevData: [
       { monDevId: 'AGM01', monDevYxValue: 1, monDevDispPolicy: 1 },
       { monDevId: 'AGM01', monDevYxValue: 0, monDevDispPolicy: 1 },
@@ -592,13 +769,2456 @@ pushWs.on('connection', (ws) => {
       { monDevId: '出入口_5', monDevYxValue: 0, monDevDispPolicy: 25 }
     ]
   }
+  const devStatusData = {
+    monDevData: [
+      {
+        monDevId: 'AGM01',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM01',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM01',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM01',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM02',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM02',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM02',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM02',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM03',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM03',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM03',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM03',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM04',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM04',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM04',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM04',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM05',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM05',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM05',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM05',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM06',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM06',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM06',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM06',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM07',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM07',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM07',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM07',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM08',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM08',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM08',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM08',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM09',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM09',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM09',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM09',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM10',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM10',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM10',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM10',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM11',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM11',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM11',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM11',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM12',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM12',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM12',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM12',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM13',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM13',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM13',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM13',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM14',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM14',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM14',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM14',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM15',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM15',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM15',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM15',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM16',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM16',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM16',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM16',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM17',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM17',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM17',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM17',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM18',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM18',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM18',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM18',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM19',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM19',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM19',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM19',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM20',
+        monDevYxValue: 2,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM20',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM20',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM20',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM21',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM21',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM21',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM21',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM22',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM22',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM22',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM22',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM23',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM23',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM23',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM23',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM24',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM24',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM24',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM24',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM25',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM25',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM25',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM25',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM26',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM26',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM26',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM26',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM27',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM27',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM27',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM27',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM28',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM28',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM28',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM28',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'AGM29',
+        monDevYxValue: 1,
+        monDevDispPolicy: 2
+      },
+      {
+        monDevId: 'AGM29',
+        monDevYxValue: 0,
+        monDevDispPolicy: 3
+      },
+      {
+        monDevId: 'AGM29',
+        monDevYxValue: 0,
+        monDevDispPolicy: 5
+      },
+      {
+        monDevId: 'AGM29',
+        monDevYxValue: 1,
+        monDevDispPolicy: 1
+      },
+      {
+        monDevId: 'Z04-DDF-A1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 23
+      },
+      {
+        monDevId: 'Z04-DDF-A1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 24
+      },
+      {
+        monDevId: 'Z04-DDF-A2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 23
+      },
+      {
+        monDevId: 'Z04-DDF-A2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 24
+      },
+      {
+        monDevId: 'Z05-DDF-A1',
+        monDevYxValue: 1,
+        monDevDispPolicy: 23
+      },
+      {
+        monDevId: 'Z05-DDF-A1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 24
+      },
+      {
+        monDevId: 'Z05-DDF-A2',
+        monDevYxValue: 1,
+        monDevDispPolicy: 23
+      },
+      {
+        monDevId: 'Z05-DDF-A2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 24
+      },
+      {
+        monDevId: 'Z04-DDF-B1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 23
+      },
+      {
+        monDevId: 'Z04-DDF-B1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 24
+      },
+      {
+        monDevId: 'Z04-DDF-B2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 23
+      },
+      {
+        monDevId: 'Z04-DDF-B2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 24
+      },
+      {
+        monDevId: 'Z05-DDF-B1',
+        monDevYxValue: 1,
+        monDevDispPolicy: 23
+      },
+      {
+        monDevId: 'Z05-DDF-B1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 24
+      },
+      {
+        monDevId: 'Z05-DDF-B2',
+        monDevYxValue: 1,
+        monDevDispPolicy: 23
+      },
+      {
+        monDevId: 'Z05-DDF-B2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 24
+      },
+      {
+        monDevId: '0205-H01(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 18
+      },
+      {
+        monDevId: '0205-H01(N)',
+        monDevYxValue: 2,
+        monDevDispPolicy: 17
+      },
+      {
+        monDevId: '0205-H04(K3)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 18
+      },
+      {
+        monDevId: '0205-H04(K3)',
+        monDevYxValue: 2,
+        monDevDispPolicy: 17
+      },
+      {
+        monDevId: '0205-H02(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 18
+      },
+      {
+        monDevId: '0205-H02(N)',
+        monDevYxValue: 2,
+        monDevDispPolicy: 17
+      },
+      {
+        monDevId: '0205-H03(K2)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 18
+      },
+      {
+        monDevId: '0205-H03(K2)',
+        monDevYxValue: 2,
+        monDevDispPolicy: 17
+      },
+      {
+        monDevId: '0205-E17(K3)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E17(K3)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E18(K3)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E18(K3)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E19(K4)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E19(K4)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E20(K4)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E20(K4)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E03(N)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E03(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E04(N)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E04(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E07(N)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E07(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E08(N)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E08(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E13(K1)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E13(K1)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E14(K1)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E14(K1)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E15(K2)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E15(K2)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E16(K2)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E16(K2)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E01(N)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E01(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E02(N)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E02(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E05(N)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E05(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '0205-E06(N)',
+        monDevYxValue: 4,
+        monDevDispPolicy: 14
+      },
+      {
+        monDevId: '0205-E06(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 16
+      },
+      {
+        monDevId: '卷帘门01',
+        monDevYxValue: 2,
+        monDevDispPolicy: 25
+      },
+      {
+        monDevId: '卷帘门01',
+        monDevYxValue: 1,
+        monDevDispPolicy: 27
+      },
+      {
+        monDevId: '卷帘门01',
+        monDevYxValue: 0,
+        monDevDispPolicy: 28
+      },
+      {
+        monDevId: '卷帘门01',
+        monDevYxValue: 0,
+        monDevDispPolicy: 26
+      },
+      {
+        monDevId: '卷帘门02',
+        monDevYxValue: 2,
+        monDevDispPolicy: 25
+      },
+      {
+        monDevId: '卷帘门02',
+        monDevYxValue: 1,
+        monDevDispPolicy: 27
+      },
+      {
+        monDevId: '卷帘门02',
+        monDevYxValue: 0,
+        monDevDispPolicy: 28
+      },
+      {
+        monDevId: '卷帘门02',
+        monDevYxValue: 0,
+        monDevDispPolicy: 26
+      },
+      {
+        monDevId: '卷帘门03',
+        monDevYxValue: 2,
+        monDevDispPolicy: 25
+      },
+      {
+        monDevId: '卷帘门03',
+        monDevYxValue: 1,
+        monDevDispPolicy: 27
+      },
+      {
+        monDevId: '卷帘门03',
+        monDevYxValue: 0,
+        monDevDispPolicy: 28
+      },
+      {
+        monDevId: '卷帘门03',
+        monDevYxValue: 0,
+        monDevDispPolicy: 26
+      },
+      {
+        monDevId: '卷帘门04',
+        monDevYxValue: 2,
+        monDevDispPolicy: 25
+      },
+      {
+        monDevId: '卷帘门04',
+        monDevYxValue: 1,
+        monDevDispPolicy: 27
+      },
+      {
+        monDevId: '卷帘门04',
+        monDevYxValue: 0,
+        monDevDispPolicy: 28
+      },
+      {
+        monDevId: '卷帘门04',
+        monDevYxValue: 0,
+        monDevDispPolicy: 26
+      },
+      {
+        monDevId: '防火卷帘06',
+        monDevYxValue: 0,
+        monDevDispPolicy: 22
+      },
+      {
+        monDevId: '防火卷帘06',
+        monDevYxValue: 0,
+        monDevDispPolicy: 21
+      },
+      {
+        monDevId: '防火卷帘01',
+        monDevYxValue: 0,
+        monDevDispPolicy: 22
+      },
+      {
+        monDevId: '防火卷帘01',
+        monDevYxValue: 0,
+        monDevDispPolicy: 21
+      },
+      {
+        monDevId: '防火卷帘05',
+        monDevYxValue: 0,
+        monDevDispPolicy: 22
+      },
+      {
+        monDevId: '防火卷帘05',
+        monDevYxValue: 0,
+        monDevDispPolicy: 21
+      },
+      {
+        monDevId: '防火卷帘04',
+        monDevYxValue: 0,
+        monDevDispPolicy: 22
+      },
+      {
+        monDevId: '防火卷帘04',
+        monDevYxValue: 0,
+        monDevDispPolicy: 21
+      },
+      {
+        monDevId: '防火卷帘02',
+        monDevYxValue: 0,
+        monDevDispPolicy: 22
+      },
+      {
+        monDevId: '防火卷帘02',
+        monDevYxValue: 0,
+        monDevDispPolicy: 21
+      },
+      {
+        monDevId: '防火卷帘03',
+        monDevYxValue: 0,
+        monDevDispPolicy: 22
+      },
+      {
+        monDevId: '防火卷帘03',
+        monDevYxValue: 0,
+        monDevDispPolicy: 21
+      },
+      {
+        monDevId: 'ASD2',
+        monDevYxValue: 1,
+        monDevDispPolicy: 11
+      },
+      {
+        monDevId: 'ASD2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 8
+      },
+      {
+        monDevId: 'ASD2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 8
+      },
+      {
+        monDevId: 'ASD2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 8
+      },
+      {
+        monDevId: 'ASD2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 8
+      },
+      {
+        monDevId: 'ASD2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 9
+      },
+      {
+        monDevId: 'MSD2_1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'MSD2_2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_3',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_4',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_5',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_6',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'ASD124',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD124',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD124',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD124',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD201',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD201',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD201',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD201',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD202',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD202',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD202',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD202',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD203',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD203',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD203',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD203',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD204',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD204',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD204',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD204',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD205',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD205',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD205',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD205',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD206',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD206',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD206',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD206',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD207',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD207',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD207',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD207',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD208',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD208',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD208',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD208',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD209',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD209',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD209',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD209',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD210',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD210',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD210',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD210',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD211',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD211',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD211',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD211',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD212',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD212',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD212',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD212',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD214',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD214',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD214',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD214',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD215',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD215',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD215',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD215',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD216',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD216',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD216',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD216',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD217',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD217',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD217',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD217',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD218',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD218',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD218',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD218',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD219',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD219',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD219',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD219',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD220',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD220',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD220',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD220',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD221',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD221',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD221',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD221',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD222',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD222',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD222',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD222',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD223',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD223',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD223',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD223',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD224',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD224',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD224',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD224',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD1',
+        monDevYxValue: 1,
+        monDevDispPolicy: 11
+      },
+      {
+        monDevId: 'ASD1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 8
+      },
+      {
+        monDevId: 'ASD1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 8
+      },
+      {
+        monDevId: 'ASD1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 8
+      },
+      {
+        monDevId: 'ASD1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 8
+      },
+      {
+        monDevId: 'ASD1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 9
+      },
+      {
+        monDevId: 'MSD1_1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'MSD1_2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_1',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_2',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_3',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_4',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_5',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_6',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'ASD101',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD101',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD101',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD101',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD102',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD102',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD102',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD102',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD103',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD103',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD103',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD103',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD104',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD104',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD104',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD104',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD105',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD105',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD105',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD105',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD106',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD106',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD106',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD106',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD107',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD107',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD107',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD107',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD108',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD108',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD108',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD108',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD109',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD109',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD109',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD109',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD110',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD110',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD110',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD110',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD111',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD111',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD111',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD111',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD112',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD112',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD112',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD112',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD113',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD113',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD113',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD113',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD113',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD113',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD113',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD113',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD114',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD114',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD114',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD114',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD115',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD115',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD115',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD115',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD116',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD116',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD116',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD116',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD117',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD117',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD117',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD117',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD119',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD119',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD119',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD119',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD119',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD119',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD119',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD119',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD120',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD120',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD120',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD120',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD121',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD121',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD121',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD121',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD122',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD122',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD122',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD122',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'ASD123',
+        monDevYxValue: 0,
+        monDevDispPolicy: 13
+      },
+      {
+        monDevId: 'ASD123',
+        monDevYxValue: 0,
+        monDevDispPolicy: 6
+      },
+      {
+        monDevId: 'ASD123',
+        monDevYxValue: 0,
+        monDevDispPolicy: 7
+      },
+      {
+        monDevId: 'ASD123',
+        monDevYxValue: 0,
+        monDevDispPolicy: 12
+      },
+      {
+        monDevId: 'EED2_7',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_8',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_9',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_10',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_11',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED2_12',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_7',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_8',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_9',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_10',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_11',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: 'EED1_12',
+        monDevYxValue: 0,
+        monDevDispPolicy: 10
+      },
+      {
+        monDevId: '站厅PIS',
+        monDevYxValue: 0,
+        monDevDispPolicy: 20
+      },
+      {
+        monDevId: '上行PIS',
+        monDevYxValue: 0,
+        monDevDispPolicy: 20
+      },
+      {
+        monDevId: '下行PIS',
+        monDevYxValue: 0,
+        monDevDispPolicy: 20
+      },
+      {
+        monDevId: 'PIS',
+        monDevYxValue: 0,
+        monDevDispPolicy: 19
+      },
+      {
+        monDevId: 'AGM01',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM02',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM03',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM04',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM05',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM06',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM07',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM08',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM09',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM10',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM11',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM12',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM13',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM14',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM15',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM16',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM17',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM18',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM19',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM20',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM21',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM22',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM23',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM24',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM25',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM26',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM27',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM28',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: 'AGM29',
+        monDevYxValue: 0,
+        monDevDispPolicy: 4
+      },
+      {
+        monDevId: '0205-E13(K1)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E14(K1)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E15(K2)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E16(K2)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E17(K3)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E18(K3)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E19(K4)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E20(K4)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E01(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E02(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E03(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E04(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E05(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E06(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E07(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-E08(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-H03(K2)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-H04(K3)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-H02(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-H01(N)',
+        monDevYxValue: 0,
+        monDevDispPolicy: 15
+      },
+      {
+        monDevId: '0205-H91(N)',
+        monDevYxValue: 1,
+        monDevDispPolicy: 15
+      }
+    ]
+  }
+
   setInterval(() => {
     // devPoiData()
+    ws.send(JSON.stringify(envData))
+    ws.send(JSON.stringify(fire))
+    // ws.send(JSON.stringify(roomFire))
   }, 5000)
   setTimeout(() => {
     ws.send(JSON.stringify(devStatusData))
     ws.send(JSON.stringify(data1))
+    ws.send(JSON.stringify(roomFire))
   }, 6000)
+  setTimeout(() => {
+    roomFire.monFireRoom[0].roomFireFlag = 0
+    ws.send(JSON.stringify(roomFire))
+  }, 12000)
   ws.on('message', (message) => {
     console.log('9485 received: %s', message)
   })
@@ -1056,11 +3676,15 @@ envMonitor.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 testUnity.on('connection', (ws) => {
-  const devArr = ['AGM01', 'AGM02', 'AGM03', 'AGM04', 'AGM05', 'AGM06', '电梯1', '电梯2']
+  const devArr = ['电梯1', '电梯2']
+  Array.from({ length: 50 }).forEach((v, k) => {
+    devArr.push('AGM' + (k + '').padStart(2, 0))
+  })
   let res = {
     initAlarmData: []
   }
-  for (let index = 0; index < devArr.length; index++) {
+  devArr.forEach((v, index) => {
+    index = index + 1
     const obj = Mock.mock({
       alarmId: index,
       ymd: 20231008,
@@ -1068,18 +3692,17 @@ testUnity.on('connection', (ws) => {
       alarmlevel: Random.natural(1, 1),
       'alarmstate|1': [1, 2, 3], //报警、事故、恢复、已确认
       tonetimes: '语音报警次数', //暂时未用到
-      'equipmentid|1': ['AGM01', 'AGM02', 'AGM03', 'AGM04', 'AGM05', 'AGM06', '电梯1', '电梯2'],
+      equipmentid: v,
       station_desc: '渌水道站',
       'system_name|1': ['PIS', 'AFC', 'DQHZ', 'PA', 'BAS', 'ACS', 'PSD', 'FG'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       member_name0: '成员名', //暂时未用到
       char_info: '宇视系统IABA:109VC-上行尾|||' + index,
       tone_info: '事件语音内容', //暂时未用到
-      cameraGrp: ['34020000001320000003', '34020000001320000003', '34020000001320000003', '34020000001320000003'] //摄像机组名
+      cameraGrp: ['34020000001320000001', '34020000001320000171', '34020000001320000161', '34020000001320000161'] //摄像机组名
     })
-
     res.initAlarmData.push(obj)
-  }
+  })
   ws.send(JSON.stringify(res))
   ws.on('message', (message) => {
     console.log('testUnity received: %s', message)
@@ -1333,4 +3956,143 @@ lightWs.on('connection', (ws) => {
   ws.on('message', (message) => {
     console.log('9487 received: %s', message)
   })
+  setInterval(() => {
+    const data = {
+      lightingData: [
+        {
+          lightingAreaId: 'Area9',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area17',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area11',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area8',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area19',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area7',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area2',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area3',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area1',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area21',
+          lightingLevel: 2
+        },
+        {
+          lightingAreaId: 'Area23',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area26',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area28',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area34',
+          lightingLevel: 2
+        },
+        {
+          lightingAreaId: 'Area32',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area24',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area36',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area10',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area12',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area18',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: '',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area20',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area4',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area5',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area6',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area33',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area35',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area29',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: 'Area27',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: '',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: '',
+          lightingLevel: 0
+        },
+        {
+          lightingAreaId: '',
+          lightingLevel: 0
+        }
+      ]
+    }
+    ws.send(JSON.stringify(data), (err) => {
+      if (err) {
+        ws.close()
+      }
+    })
+  }, 10000)
 })

@@ -11,6 +11,7 @@
     "mqtest": "node MqTest.js",
     "mqtest2": "node MqTest2.js",
     "flv": "node ./rtsp/rtsp.js",
+    "getPath": "node getImgPath.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

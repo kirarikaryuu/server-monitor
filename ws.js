@@ -403,7 +403,7 @@ wsPublic.on('connection', (ws) => {
 
   // 客流趋势ws
   const inout = () => {
-    const place = Random.natural(7, 9)
+    const place = Random.natural(7, 23)
     let res = {
       paxTrendData: []
     }
