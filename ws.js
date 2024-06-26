@@ -183,8 +183,8 @@ wsPublic.on('connection', (ws) => {
       const obj = {
         monitorAreaDesc: '位置' + index,
         monitorAreaID: index,
-        monitorYcValue: Random.natural(0, 200),
-        areaDisplayRange: Random.natural(1, 200),
+        monitorYcValue: Random.natural(0, 20),
+        areaDisplayRange: Random.natural(1, 20),
         paxVolumeWarn: 60,
         paxVolumeAlarm: 80,
         position: Mock.mock({
@@ -972,9 +972,9 @@ patrol.on('connection', (ws) => {
     let res = Mock.mock({
       emgPlanData: {
         emgPlanId: 1,
-        emgPlanDesc: '应急预案描述' + 1,
-        emgPlanType: '应急预案类型' + 1,
-        emgPlanInfo: '应急预案内容' + 1,
+        emgPlanDesc: '大客流预案',
+        emgPlanType: '大客流预案',
+        emgPlanInfo: '触发大客流预案，进入人员疏散模式',
         cameraGrp: [1, 2, 3, 4, 5]
       }
     })

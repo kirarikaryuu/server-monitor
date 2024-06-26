@@ -3241,7 +3241,8 @@ patrol.on('connection', (ws) => {
       let res = {
         trigType: 1,
         emgPlanId: 1,
-        emgPlanDesc: '应急预案描述' + 1,
+        // emgPlanDesc: '应急预案描述' + 1,
+        emgPlanDesc: '高温天气预案',
         emgPlanType: '应急预案类型' + 1,
         emgPlanInfo: '应急预案内容' + 1,
         cameraGrp: [
@@ -3703,9 +3704,9 @@ testUnity.on('connection', (ws) => {
     })
     res.initAlarmData.push(obj)
   })
-  ws.send(JSON.stringify(res))
   ws.on('message', (message) => {
-    console.log('testUnity received: %s', message)
+    console.log('9483 testUnity received: %s', message)
+    ws.send(JSON.stringify(res))
     // 更新
     console.log(JSON.parse(message))
     if (JSON.parse(message).alarmidlist) {
@@ -4089,10 +4090,32 @@ lightWs.on('connection', (ws) => {
         }
       ]
     }
+
     ws.send(JSON.stringify(data), (err) => {
       if (err) {
         ws.close()
       }
     })
   }, 10000)
+  setInterval(() => {
+    const data2 = {
+      lightDevState: [
+        {
+          lightDevId: 'AH-BM1/A1/T1.DALI.1_1',
+          monDevYxName: 'test22',
+          monDevYxDesc: 'test22',
+          monDevYxStateDesc: 'test22',
+          monDevYxAlarmFlag: 1
+        },
+        {
+          lightDevId: 'AH-BM1/A1/T1.DALI.1_1',
+          monDevYxName: 'test111111',
+          monDevYxDesc: 'test111111',
+          monDevYxStateDesc: 'test111111',
+          monDevYxAlarmFlag: 1
+        }
+      ]
+    }
+    ws.send(JSON.stringify(data2))
+  }, 2000)
 })
