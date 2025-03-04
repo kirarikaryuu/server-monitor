@@ -327,7 +327,7 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 2
+              devHealthStateValue: 1
             }
           ]
         },
@@ -340,7 +340,7 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 2
+              devHealthStateValue: 1
             }
           ]
         },
@@ -353,11 +353,11 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '关闭',
-              devHealthStateValue: 1
+              devHealthStateValue: 2
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 2
+              devHealthStateValue: 1
             }
           ]
         },
@@ -370,11 +370,11 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '关闭',
-              devHealthStateValue: 1
+              devHealthStateValue: 2
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 2
+              devHealthStateValue: 1
             }
           ]
         },
@@ -387,11 +387,11 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '关闭',
-              devHealthStateValue: 1
+              devHealthStateValue: 2
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 2
+              devHealthStateValue: 1
             }
           ]
         },
@@ -404,11 +404,11 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '关闭',
-              devHealthStateValue: 1
+              devHealthStateValue: 2
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 2
+              devHealthStateValue: 1
             }
           ]
         },
@@ -421,11 +421,11 @@ wsPublic.on('connection', (ws) => {
             },
             {
               devHealthStateDesc: '关闭',
-              devHealthStateValue: 1
+              devHealthStateValue: 2
             },
             {
               devHealthStateDesc: '故障',
-              devHealthStateValue: 2
+              devHealthStateValue: 1
             }
           ]
         }
@@ -445,6 +445,7 @@ wsPublic.on('connection', (ws) => {
           const stateObj = {
             devHealthStateValue: v.devHealthStateValue,
             devHealthStateNum: faker.datatype.number({ min: 2, max: 30 })
+            // devHealthStateNum: [10, 20, 30][v.devHealthStateValue]
           }
           obj.devHealthState.push(stateObj)
         })
@@ -474,27 +475,6 @@ wsPublic.on('connection', (ws) => {
 // 推送ws
 pushWs.on('connection', (ws) => {
   // 设备查看
-  const devPoiData = () => {
-    const data = {
-      monDevPoiData: []
-    }
-
-    const devArr = ['AGM01', 'AGM02', 'AGM03', 'AGM04', 'AGM05', 'AGM06', '电梯1', '电梯2']
-    const arr2 = [0, 1, 2, 3]
-    arr2.forEach((val) => {
-      devArr.forEach((v, k) => {
-        const obj = Mock.mock({
-          monDevId: v,
-          'monDevYxAlarmFlag|1': [0, 1], //1:报警  0：正常
-          monDevYxName: '设备遥信名' + val + k,
-          monDevYxDesc: '遥信描述' + val + k,
-          monDevYxStateDesc: '遥信状态描述' + val + k
-        })
-        data.monDevPoiData.push(obj)
-      })
-    })
-    ws.send(JSON.stringify(data))
-  }
   const data0 = {
     monDevPoiData: [
       {
@@ -633,26 +613,50 @@ pushWs.on('connection', (ws) => {
     monFireData: [
       {
         monFireAreaId: '第一防烟分区',
-        monFireType: 2
+        monFireType: 0
       },
       {
         monFireAreaId: '第二防烟分区',
+        monFireType: 1
+      },
+      {
+        monFireAreaId: '第三防烟分区',
         monFireType: 2
       },
-      // {
-      //   monFireAreaId: '第三防烟分区',
-      //   monFireType: 2
-      // },
-      // {
-      //   monFireAreaId: '第四防烟分区',
-      //   monFireType: 2
-      // },
+      {
+        monFireAreaId: '第四防烟分区',
+        monFireType: 2
+      },
       {
         monFireAreaId: '第五防烟分区',
-        monFireType: 2
+        monFireType: 1
       },
       {
         monFireAreaId: '第六防烟分区',
+        monFireType: 2
+      },
+      {
+        monFireAreaId: '第七防烟分区',
+        monFireType: 2
+      },
+      {
+        monFireAreaId: '第八防烟分区',
+        monFireType: 2
+      },
+      {
+        monFireAreaId: '第九防烟分区',
+        monFireType: 2
+      },
+      {
+        monFireAreaId: '第十防烟分区',
+        monFireType: 2
+      },
+      {
+        monFireAreaId: '第十一防烟分区',
+        monFireType: 2
+      },
+      {
+        monFireAreaId: '第十二防烟分区',
         monFireType: 2
       }
     ]
@@ -663,55 +667,61 @@ pushWs.on('connection', (ws) => {
       {
         fireRoomDesc: '变配电室',
         roomFireFlag: 1,
-        roomFireAreaId: '第一防烟分区',
-        cameraGrp: ['34020000001320000001']
+        roomFireAreaId: '第一防烟分区'
+        // cameraGrp: ['34020000001320000001']
       },
       {
         fireRoomDesc: '通风空调电控室',
-        roomFireFlag: 0,
+        roomFireFlag: 1,
         roomFireAreaId: '第六防烟分区',
         cameraGrp: ['34020000001320000171']
       },
       {
         fireRoomDesc: '商用通信设备室',
-        roomFireFlag: 0,
+        roomFireFlag: 1,
         roomFireAreaId: '第五防烟分区',
         cameraGrp: ['34020000001320000161']
       },
       {
         fireRoomDesc: '专用通信设备室',
-        roomFireFlag: 0,
+        roomFireFlag: 1,
         roomFireAreaId: '第五防烟分区',
         cameraGrp: ['34020000001320000171']
       },
       {
         fireRoomDesc: '弱电综合电源室',
-        roomFireFlag: 0,
+        roomFireFlag: 1,
         roomFireAreaId: '第五防烟分区',
         cameraGrp: ['34020000001320000001']
       },
       {
         fireRoomDesc: '综合监控设备室',
-        roomFireFlag: 0,
+        roomFireFlag: 1,
         roomFireAreaId: '第五防烟分区',
         cameraGrp: ['34020000001320000161']
       },
       {
         fireRoomDesc: '信号设备室',
-        roomFireFlag: 0,
+        roomFireFlag: 1,
         roomFireAreaId: '第五防烟分区',
         cameraGrp: ['34020000001320000171']
       },
       {
         fireRoomDesc: '警用通信设备室',
-        roomFireFlag: 0,
+        roomFireFlag: 1,
         roomFireAreaId: '第一防烟分区',
         cameraGrp: ['34020000001320000162']
       },
       {
         fireRoomDesc: '通风空调电控室',
-        roomFireFlag: 0,
+        roomFireFlag: 1,
         roomFireAreaId: '第二防烟分区',
+        cameraGrp: ['34020000001320000001']
+      },
+      {
+        fireRoomDesc: '屏蔽门控制室',
+        roomFireFlag: 1,
+        roomFireAreaId: '',
         cameraGrp: ['34020000001320000001']
       }
     ]
@@ -3203,24 +3213,931 @@ pushWs.on('connection', (ws) => {
       }
     ]
   }
-
-  setInterval(() => {
-    // devPoiData()
-    ws.send(JSON.stringify(envData))
-    ws.send(JSON.stringify(fire))
-    // ws.send(JSON.stringify(roomFire))
-  }, 5000)
-  setTimeout(() => {
-    ws.send(JSON.stringify(devStatusData))
-    ws.send(JSON.stringify(data1))
-    ws.send(JSON.stringify(roomFire))
-  }, 6000)
-  setTimeout(() => {
-    roomFire.monFireRoom[0].roomFireFlag = 0
-    ws.send(JSON.stringify(roomFire))
-  }, 12000)
+  const envTest = {
+    monEnvData: [
+      {
+        monEnvAreaId: 'CH-01',
+        monEnvAreaDesc: '车站轨行区1',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-02',
+        monEnvAreaDesc: '车站轨行区2',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-03',
+        monEnvAreaDesc: '车站轨行区3',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-04',
+        monEnvAreaDesc: '车站轨行区4',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-05',
+        monEnvAreaDesc: '站厅公共区1',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 20,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 40,
+            monEnvLimitLevel: 1
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 80,
+            monEnvLimitLevel: 2
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-06',
+        monEnvAreaDesc: '站厅公共区2',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-07',
+        monEnvAreaDesc: '站厅公共区3',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-08',
+        monEnvAreaDesc: '站厅公共区4',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-09',
+        monEnvAreaDesc: '站台公共区1',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'CH-10',
+        monEnvAreaDesc: '站台公共区2',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 2,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A01',
+        monEnvAreaDesc: 'A端新风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A02',
+        monEnvAreaDesc: 'AHU-A1进风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A03',
+        monEnvAreaDesc: 'AHU-A1送风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A04',
+        monEnvAreaDesc: '大系统回风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A101',
+        monEnvAreaDesc: 'A1-K进风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A102',
+        monEnvAreaDesc: 'A1-K送风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A103',
+        monEnvAreaDesc: 'A1-K回风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A201',
+        monEnvAreaDesc: 'A2-K进风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A202',
+        monEnvAreaDesc: 'A2-K送风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A203',
+        monEnvAreaDesc: 'A1-K回风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A204',
+        monEnvAreaDesc: '通风空调电控室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A205',
+        monEnvAreaDesc: '商用通信设备室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A206',
+        monEnvAreaDesc: '专用通信设备室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A207',
+        monEnvAreaDesc: '弱电综合电源室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A208',
+        monEnvAreaDesc: '综合监控设备室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A209',
+        monEnvAreaDesc: '信号设备室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A210',
+        monEnvAreaDesc: '车控室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A211',
+        monEnvAreaDesc: '照明配电室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A212',
+        monEnvAreaDesc: '警用通信设备室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A213',
+        monEnvAreaDesc: '屏蔽门控制室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A301',
+        monEnvAreaDesc: 'A3-K进风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A302',
+        monEnvAreaDesc: 'A3-K送风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A303',
+        monEnvAreaDesc: 'A3-K回风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A304',
+        monEnvAreaDesc: '变配电室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A305',
+        monEnvAreaDesc: '再生能室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A306',
+        monEnvAreaDesc: '控制室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A307',
+        monEnvAreaDesc: '整流变压器室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A308',
+        monEnvAreaDesc: '整流变压器室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-A309',
+        monEnvAreaDesc: '开关柜室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B01',
+        monEnvAreaDesc: 'B端新风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B02',
+        monEnvAreaDesc: 'AHU-B1进风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B03',
+        monEnvAreaDesc: 'AHU-B1送风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B04',
+        monEnvAreaDesc: '大系统回风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B101',
+        monEnvAreaDesc: 'B1-K进风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B102',
+        monEnvAreaDesc: 'B1-K送风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B103',
+        monEnvAreaDesc: 'B1-K回风',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B104',
+        monEnvAreaDesc: '照明配电室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      },
+      {
+        monEnvAreaId: 'H-B105',
+        monEnvAreaDesc: '环控电控室',
+        monEnvAlarmFlag: 0,
+        monEnvRtData: [
+          {
+            monEnvType: 0,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          },
+          {
+            monEnvType: 1,
+            monEnvYcValue: 0,
+            monEnvLimitLevel: 0
+          }
+        ]
+      }
+    ]
+  }
+  // 环境检测数据
+  envTest.monEnvData.forEach((v) => (v.monEnvAlarmFlag = 1))
+  const timerArr = []
   ws.on('message', (message) => {
-    console.log('9485 received: %s', message)
+    const data = JSON.parse(message)
+    console.log('9485 received: %s', data.FuncType)
+    const roomArr = [
+      '信号设备室',
+      '专用通信设备室',
+      '弱电综合电源室',
+      '公安通信设备室',
+      '控制室',
+      'A通风空调电控室',
+      '综合监控设备室',
+      '民用通信设备室',
+      '变配电室',
+      '开关柜室',
+      'B通风空调电控室'
+    ]
+    roomArr.forEach((v) => {
+      roomFire.monFireRoom.push({
+        fireRoomDesc: v,
+        roomFireFlag: 1,
+        roomFireAreaId: ''
+        // cameraGrp: ['']
+      })
+    })
+    if (data.FuncType === 1) {
+      console.log('set timer')
+      const timer1 = setInterval(() => {
+        // ws.send(JSON.stringify(envData))
+        ws.send(JSON.stringify(fire))
+        // ws.send(JSON.stringify(roomFire))
+      }, 5000)
+      const timer2 = setTimeout(() => {
+        ws.send(JSON.stringify(devStatusData))
+        ws.send(JSON.stringify(data1))
+        ws.send(JSON.stringify(roomFire))
+      }, 6000)
+      const timer3 = setTimeout(() => {
+        // roomFire.monFireRoom.map((v) => (v.roomFireFlag = 0))
+        // ws.send(JSON.stringify(roomFire))
+      }, 12000)
+      const timer4 = setInterval(() => {
+        // ws.send(JSON.stringify(envTest))
+      }, 500)
+      timerArr.push(timer1, timer2, timer3, timer4)
+    } else {
+      console.log('clearInterval')
+      timerArr.forEach((v) => {
+        console.log('timer', v)
+        clearInterval(v)
+      })
+      timerArr.splice(0, timerArr.length)
+    }
   })
 })
 // 自动巡检ws
@@ -3343,9 +4260,9 @@ patrol.on('connection', (ws) => {
     }
 
     // 预案推送
-    // planPush()
-    // patrolPush()
-  }, 2000)
+    planPush()
+    patrolPush()
+  }, 3000)
   const ykObj = Mock.mock({
     devYxName: guid(),
     devYxDesc: '遥信描述',
@@ -3677,36 +4594,40 @@ envMonitor.on('connection', (ws) => {
 // addAlarmData
 // initAlarmData
 testUnity.on('connection', (ws) => {
-  const devArr = ['电梯1', '电梯2']
-  Array.from({ length: 50 }).forEach((v, k) => {
-    devArr.push('AGM' + (k + '').padStart(2, 0))
-  })
-  let res = {
-    initAlarmData: []
-  }
-  devArr.forEach((v, index) => {
-    index = index + 1
-    const obj = Mock.mock({
-      alarmId: index,
-      ymd: 20231008,
-      hmsms: Random.date('HHmmssSSS'),
-      alarmlevel: Random.natural(1, 1),
-      'alarmstate|1': [1, 2, 3], //报警、事故、恢复、已确认
-      tonetimes: '语音报警次数', //暂时未用到
-      equipmentid: v,
-      station_desc: '渌水道站',
-      'system_name|1': ['PIS', 'AFC', 'DQHZ', 'PA', 'BAS', 'ACS', 'PSD', 'FG'],
-      'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
-      member_name0: '成员名', //暂时未用到
-      char_info: '宇视系统IABA:109VC-上行尾|||' + index,
-      tone_info: '事件语音内容', //暂时未用到
-      cameraGrp: ['34020000001320000001', '34020000001320000171', '34020000001320000161', '34020000001320000161'] //摄像机组名
+  const sendAlarm = () => {
+    const devArr = []
+    Array.from({ length: 20 }).forEach((v, k) => {
+      devArr.push('AGM' + (k + '').padStart(2, 0))
     })
-    res.initAlarmData.push(obj)
-  })
+    let res = {
+      initAlarmData: []
+    }
+    devArr.forEach((v, index) => {
+      index = index + 1
+      const obj = Mock.mock({
+        alarmId: index,
+        ymd: 20231008,
+        hmsms: Random.date('HHmmssSSS'),
+        alarmlevel: Random.natural(1, 1),
+        'alarmstate|1': [1, 2, 3], //报警、事故、恢复、已确认
+        tonetimes: '语音报警次数', //暂时未用到
+        equipmentid: v,
+        station_desc: '渌水道站',
+        'system_name|1': ['PIS', 'AFC', 'DQHZ', 'PA', 'BAS', 'ACS', 'PSD', 'FG'],
+        'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
+        member_name0: '成员名', //暂时未用到
+        char_info: '宇视系统IABA:109VC-上行尾|||' + index,
+        tone_info: '事件语音内容', //暂时未用到
+        cameraGrp: ['34020000001320000001', '34020000001320000171', '34020000001320000161', '34020000001320000161'] //摄像机组名
+      })
+      res.initAlarmData.push(obj)
+    })
+    ws.send(JSON.stringify(res))
+  }
+  sendAlarm()
+  // setInterval(sendAlarm, 7000)
   ws.on('message', (message) => {
     console.log('9483 testUnity received: %s', message)
-    ws.send(JSON.stringify(res))
     // 更新
     console.log(JSON.parse(message))
     if (JSON.parse(message).alarmidlist) {
@@ -3962,39 +4883,39 @@ lightWs.on('connection', (ws) => {
       lightingData: [
         {
           lightingAreaId: 'Area9',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area17',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area11',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area8',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area19',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area7',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area2',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area3',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area1',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area21',
@@ -4002,15 +4923,15 @@ lightWs.on('connection', (ws) => {
         },
         {
           lightingAreaId: 'Area23',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area26',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area28',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area34',
@@ -4018,75 +4939,75 @@ lightWs.on('connection', (ws) => {
         },
         {
           lightingAreaId: 'Area32',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area24',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area36',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area10',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area12',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area18',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: '',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area20',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area4',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area5',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area6',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area33',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area35',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area29',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: 'Area27',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: '',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: '',
-          lightingLevel: 0
+          lightingLevel: 3
         },
         {
           lightingAreaId: '',
-          lightingLevel: 0
+          lightingLevel: 3
         }
       ]
     }
@@ -4118,4 +5039,34 @@ lightWs.on('connection', (ws) => {
     }
     ws.send(JSON.stringify(data2))
   }, 2000)
+  setInterval(() => {
+    const data = [
+      {
+        lightModeId: 'aaa',
+        lightModeName: '场景4'
+      },
+      {
+        lightModeId: '1',
+        lightModeName: '场景3'
+      },
+      {
+        lightModeId: '2',
+        lightModeName: '测试场景'
+      },
+      {
+        lightModeId: 'ccc',
+        lightModeName: '场景5'
+      },
+      {
+        lightModeId: 'dataArr',
+        lightModeName: '场景2'
+      },
+      {
+        lightModeId: 'e',
+        lightModeName: '场景1'
+      }
+    ]
+    const data2 = { lightModeId: data[Random.natural(0, 5)].lightModeId }
+    ws.send(JSON.stringify(data2))
+  }, 4000)
 })

@@ -892,11 +892,11 @@ patrol.on('connection', (ws) => {
     isYk: 1,
     ykStateGrpDesc: [
       {
-        ykStateDesc: 'node1',
+        ykStateDesc: '开启',
         ykValue: 1
       },
       {
-        ykStateDesc: 'node2',
+        ykStateDesc: '关闭',
         ykValue: 2
       }
     ]
@@ -1278,7 +1278,7 @@ testUnity.on('connection', (ws) => {
     '电梯011'
   ]
   let res = {
-    allAlarmData: []
+    initAlarmData: []
   }
   for (let index = 0; index < devArr.length; index++) {
     const obj = Mock.mock({
@@ -1290,7 +1290,8 @@ testUnity.on('connection', (ws) => {
       tonetimes: '语音报警次数', //暂时未用到
       equipmentid: devArr[index],
       station_desc: '渌水道站',
-      'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
+      // 'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
+      'system_name|1': ['AFC', 'BAS', 'CCTV', 'ACS'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       member_name0: '成员名', //暂时未用到
       char_info: '宇视系统|||IABA:109VC渌水道-上行尾' + index,
@@ -1301,31 +1302,31 @@ testUnity.on('connection', (ws) => {
       ] //摄像机组名
     })
 
-    res.allAlarmData.push(obj)
+    res.initAlarmData.push(obj)
   }
   setInterval(() => ws.send(JSON.stringify(res)), 8000)
   ws.send(JSON.stringify(res))
-  // ws.on('message', (message) => {
-  //   console.log('testUnity received: %s', message)
-  //   // 更新
-  //   console.log(JSON.parse(message))
-  //   if (JSON.parse(message).alarmidlist) {
-  //     const idList = JSON.parse(message).alarmidlist
-  //     idList.forEach((val) => {
-  //       let updateIndex = res.initAlarmData.findIndex((data) => data.alarmId === val)
-  //       let updateObj = res.initAlarmData[updateIndex]
-  //       updateObj.alarmstate = 5
-  //       let update = {
-  //         updateAlarmData: updateObj
-  //       }
-  //       ws.send(JSON.stringify(update), (err) => {
-  //         if (err) {
-  //           ws.close()
-  //         }
-  //       })
-  //     })
-  //   }
-  // })
+  ws.on('message', (message) => {
+    console.log('testUnity received: %s', message)
+    // 更新
+    console.log(JSON.parse(message))
+    if (JSON.parse(message).alarmidlist) {
+      const idList = JSON.parse(message).alarmidlist
+      idList.forEach((val) => {
+        let updateIndex = res.initAlarmData.findIndex((data) => data.alarmId === val)
+        let updateObj = res.initAlarmData[updateIndex]
+        updateObj.alarmstate = 5
+        let update = {
+          updateAlarmData: updateObj
+        }
+        ws.send(JSON.stringify(update), (err) => {
+          if (err) {
+            ws.close()
+          }
+        })
+      })
+    }
+  })
 
   const alarmTimer = setInterval(() => {
     // 事件
