@@ -12,6 +12,11 @@ const router = new Router()
 // const appSecret = 'Rue9bhB1TRnOf0dFDjvj'
 const appKey = '27568725'
 const appSecret = 'tWGt6G45vAPaAFX1CUrb'
+// 天津7
+// const appKey = '28429618'
+// const appSecret = 'tbeCFQJK3tSzUFEkN3I1'
+// 15鼓楼地址 : 10.71.115.1:9443
+// 10天塔地址 : 10.71.110.1:9443
 const baseUrl = 'https://192.168.10.70:443'
 const headers = {
   'Accept-Charset': 'utf-8',
@@ -73,7 +78,7 @@ const getRegionCameras = () => {
     const body = JSON.stringify({
       pageNo: 1,
       pageSize: 20,
-      regionIndexCode: '38f3c0dcb23145cd8c8fc9ab85aa841e',
+      regionIndexCode: '0deb1bb3a0fb4e91b77b1cc44db64864',
       treeCode: '0'
     })
     const timeout = 15
@@ -117,7 +122,14 @@ router.get('/getCameras', async (ctx) => {
 })
 
 // get stream
-const getUrl = (type) => {
+const getUrl = (type, indexCode) => {
+  console.log('getUrl', type, indexCode)
+  let cameraIndexCode
+  if (indexCode) {
+    cameraIndexCode = indexCode
+  } else {
+    cameraIndexCode = '74bc15fcd4dd4fd18f4bd3c323b0afe3'
+  }
   return new Promise(async (resolve) => {
     // const requestUrl = 'https://123.123.123.123:443/artemis/api/video/v1/cameras/previewURLs'
     // const baseUrl = 'https://192.168.10.70:443'
@@ -128,7 +140,8 @@ const getUrl = (type) => {
     // const requestUrl = 'https://192.168.10.70:443/api/video/v2/cameras/previewURLs'
 
     const body = JSON.stringify({
-      cameraIndexCode: '67b0ed528012463bbec5c58d21926b39',
+      // cameraIndexCode: '0deb1bb3a0fb4e91b77b1cc44db64864',
+      cameraIndexCode,
       streamType: 0,
       protocol: type,
       transmode: 1,
@@ -224,13 +237,15 @@ router.get('/getTopic', async (ctx) => {
 //获取报警
 router.get('/getAlarm', async (ctx) => {
   const result = await getAlarm()
+
   let text = convertData(JSON.parse(result)?.data)
   ctx.body = text
 })
 
 //ws
 router.get('/getWsUrl', async (ctx) => {
-  const result = await getUrl('ws')
+  const { code } = ctx.query ?? ''
+  const result = await getUrl('ws', code)
   let text = convertData(JSON.parse(result)?.data)
   ctx.body = text
 })
@@ -320,4 +335,4 @@ const getMq = async () => {
 // getMq()
 
 app.use(router.routes()).use(router.allowedMethods()) //把前面所有定义的方法添加到app应用上去
-app.listen(4884)
+app.listen(4885)
