@@ -1,9 +1,7 @@
 // 海康sdk
 const Hikopenapi = require('hikopenapi-node')
-// const Hikopenapi = require('hikopenapi-native-node')
 const Koa = require('koa')
 const Router = require('koa-router')
-const StompNode = require('stompjs')
 const mqtt = require('mqtt')
 // 处理视频乱码
 const iconv = require('iconv-lite')
@@ -13,18 +11,19 @@ const WebSocket = require('ws')
 const app = new Koa()
 const router = new Router()
 
-// const wsMq = new WebSocket.Server({ port: 9119 })
-// const wsClients = new Set()
-// const appKey = '27104148'
-// const appSecret = 'Rue9bhB1TRnOf0dFDjvj'
+const wsMq = new WebSocket.Server({ port: 9119 })
+const wsClients = new Set()
+
+// 凯发 10.70
 const appKey = '27568725'
 const appSecret = 'tWGt6G45vAPaAFX1CUrb'
-// 天津7
+// // 天津7
 // const appKey = '28429618'
 // const appSecret = 'tbeCFQJK3tSzUFEkN3I1'
 // 15鼓楼地址 : 10.71.115.1:9443
 // 10天塔地址 : 10.71.110.1:9443
 const baseUrl = 'https://192.168.10.70:443'
+// const baseUrl = 'https://10.71.110.1:9443'
 const headers = {
   'Accept-Charset': 'utf-8',
   'content-type': 'application/json;charset=UTF-8',
@@ -61,7 +60,7 @@ const getRegions = () => {
 
     const body = JSON.stringify({
       pageNo: 1,
-      pageSize: 20,
+      pageSize: 200,
       treeCode: '0'
     })
     const timeout = 15
@@ -84,8 +83,8 @@ const getRegionCameras = () => {
 
     const body = JSON.stringify({
       pageNo: 1,
-      pageSize: 20,
-      regionIndexCode: '0deb1bb3a0fb4e91b77b1cc44db64864',
+      pageSize: 200,
+      regionIndexCode: '92ca8437a67342adb93949555a105dd1',
       treeCode: '0'
     })
     const timeout = 15
@@ -101,7 +100,7 @@ router.get('/getRegionCameras', async (ctx) => {
   ctx.body = text
 })
 
-// get cameras 关键方法，里面啥都有
+// get cameras
 const getCameras = () => {
   return new Promise(async (resolve) => {
     // const requestUrl = 'https://123.123.123.123:443/artemis/api/video/v1/cameras/previewURLs'
@@ -112,7 +111,7 @@ const getCameras = () => {
 
     const body = JSON.stringify({
       pageNo: 1,
-      pageSize: 400,
+      pageSize: 5000,
       treeCode: '0'
     })
     const timeout = 15
@@ -131,10 +130,11 @@ router.get('/getCameras', async (ctx) => {
 // get stream
 const getUrl = (type, indexCode) => {
   console.log('getUrl', type, indexCode)
-  let cameraIndexCode
+  let planID, cameraIndexCode
   if (indexCode) {
-    cameraIndexCode = indexCode
+    planID = cameraIndexCode = indexCode
   } else {
+    planID = '10095'
     cameraIndexCode = '74bc15fcd4dd4fd18f4bd3c323b0afe3'
   }
   return new Promise(async (resolve) => {
@@ -148,8 +148,11 @@ const getUrl = (type, indexCode) => {
 
     const body = JSON.stringify({
       // cameraIndexCode: '0deb1bb3a0fb4e91b77b1cc44db64864',
-      // planID: cameraIndexCode,
+      // planID: '10000000001310247286',
+      // planID: '10000000001310638105',
+      // planID: '0deb1bb3a0fb4e91b77b1cc44db64864',
       cameraIndexCode,
+      planID,
       streamType: 0,
       protocol: type,
       transmode: 1,
@@ -176,7 +179,7 @@ const getHisUrl = (type) => {
       planID: '100001',
       beginTime: '2017-09-26T00:00:00.000+08:00',
       endTime: '2023-09-26T20:00:00.000+08:00',
-      cameraIndexCode: '67b0ed528012463bbec5c58d21926b39',
+      cameraIndexCode: 'c911b270a6bf40c1a218c048e63fee51',
       recordLocation: '0',
       protocol: 'rtsp',
       needReturnClipInfo: true,
@@ -196,13 +199,7 @@ const getTopic = () => {
     const requestUrl2 = '/artemis/api/nms/v1/alarm/getTopic'
 
     // const body = JSON.stringify({
-    //     "eventTypes": [
-    //         131605,
-    //         131676,
-    //         131677,
-    //         131678,
-    //         131670
-    //     ]
+    //   eventTypes: [131605, 131676, 131677, 131678, 131670]
     // })
     const body = JSON.stringify({})
     const timeout = 15
@@ -255,8 +252,6 @@ router.get('/getAlarm', async (ctx) => {
 router.get('/getWsUrl', async (ctx) => {
   const { code } = ctx.query ?? ''
   const result = await getUrl('ws', code)
-  console.log('result', result)
-
   let text = convertData(JSON.parse(result)?.data)
   ctx.body = text
 })
@@ -275,74 +270,28 @@ router.get('/getHlsUrl', async (ctx) => {
   ctx.body = text
 })
 
-const getStompMq = async () => {
-  const result = await getTopicInfo()
-  let text = convertData(JSON.parse(result)?.data)
-  if (text?.data && text?.data?.topicName) {
-    const { host, clientId, userName, password, topicName } = text?.data
-    const hostArr = host.replace('tcp://', '').split(':')
-    const ip = hostArr[0]
-    const port = parseInt(hostArr[1])
-    const headers = {
-      host,
-      'client-id': clientId,
-      login: userName,
-      passcode: password
-    }
-    // const headers = {
-    //     // login: 'artemis_27104148',
-    //     // passcode: '7fbaa20d6fea'
-    //     clientId: '6ebbc06746c649d4b6af16f5f4054a8d',
-    //     userName: 'artemis_27104148',
-    //     password: '7fbaa20d6fea'
-    // }
-    const onConnected = (frame) => {
-      console.log(frame)
-      Object.keys(topicName).forEach((key) => {
-        client.subscribe(topicName[key], responseCallback)
-      })
-    } // 失败后的处理
-    const responseCallback = (frame) => {
-      console.log(frame.body)
-      try {
-        // 格式化MQ消息
-        let data = JSON.parse(frame.body)
-        console.log(data)
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    const onFailed = (frame) => {
-      console.log('MQ Failed: ' + frame) // 失败后  等待5秒后重新连接
-      setTimeout(() => {
-        const client = StompNode.overTCP(ip, port)
-        client.connect(headers, onConnected, onFailed)
-      }, 3000)
-    }
-    const client = Stomp.overTCP(ip, port)
-    client.connect(headers, onConnected, onFailed)
-  }
-}
-// getStompMq()
+app.use(router.routes()).use(router.allowedMethods()) //把前面所有定义的方法添加到app应用上去
+app.listen(4885)
 
 // 通过mqtt获取mq消息，之后通过websocket转发给前端
 const getMqttMq = async () => {
   // 获取mq订阅信息
   const result = await getTopicInfo()
-  const text = convertData(JSON.parse(result)?.data)
-  if (text.data && text.data.topicName) {
+  const text = JSON.parse(convertData(JSON.parse(result)?.data)) ?? {}
+  if (text?.data && text?.data?.topicName) {
     const { host, clientId, userName, password, topicName } = text?.data
     // 创建mqtt客户端连接mq服务器
+    console.log('host', text)
     const mqClient = mqtt.connect(host, {
       clientId,
-      clean: true,
       connectTimeout: 4000,
-      login: userName,
-      passcode: password,
+      username: userName,
+      password: password,
       reconnectPeriod: 1000
     })
     // topic对象转换为数组，便于订阅
     const topicArr = Object.values(topicName)
+    console.log('topicArr', topicArr)
     mqClient.on('connect', (e) => {
       console.log('Connected', e)
       wsMq.on('connection', (ws) => {
@@ -357,14 +306,11 @@ const getMqttMq = async () => {
     mqClient.on('message', (topic, message) => {
       console.log('Received Message:', topic, message.toString())
       // 转发消息
-      const msg = JSON.stringify({ topic, data: payload.toString() })
+      const msg = JSON.stringify({ topic, data: message.toString() })
       wsClients.forEach((client) => client.send(msg))
     })
   } else {
     console.log('获取MQ信息失败:', convertData(JSON.parse(result)?.data))
   }
 }
-// getMqttMq()
-
-app.use(router.routes()).use(router.allowedMethods()) //把前面所有定义的方法添加到app应用上去
-app.listen(4885)
+getMqttMq()
