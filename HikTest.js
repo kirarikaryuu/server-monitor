@@ -1,13 +1,20 @@
 // 海康sdk
 const Hikopenapi = require('hikopenapi-node')
+// const Hikopenapi = require('hikopenapi-native-node')
 const Koa = require('koa')
 const Router = require('koa-router')
-const Stomp = require('stompjs')
+const StompNode = require('stompjs')
+const mqtt = require('mqtt')
 // 处理视频乱码
 const iconv = require('iconv-lite')
+//引入ws模块
+const WebSocket = require('ws')
 
 const app = new Koa()
 const router = new Router()
+
+// const wsMq = new WebSocket.Server({ port: 9119 })
+// const wsClients = new Set()
 // const appKey = '27104148'
 // const appSecret = 'Rue9bhB1TRnOf0dFDjvj'
 const appKey = '27568725'
@@ -94,7 +101,7 @@ router.get('/getRegionCameras', async (ctx) => {
   ctx.body = text
 })
 
-// get cameras
+// get cameras 关键方法，里面啥都有
 const getCameras = () => {
   return new Promise(async (resolve) => {
     // const requestUrl = 'https://123.123.123.123:443/artemis/api/video/v1/cameras/previewURLs'
@@ -105,7 +112,7 @@ const getCameras = () => {
 
     const body = JSON.stringify({
       pageNo: 1,
-      pageSize: 20,
+      pageSize: 400,
       treeCode: '0'
     })
     const timeout = 15
@@ -141,6 +148,7 @@ const getUrl = (type, indexCode) => {
 
     const body = JSON.stringify({
       // cameraIndexCode: '0deb1bb3a0fb4e91b77b1cc44db64864',
+      // planID: cameraIndexCode,
       cameraIndexCode,
       streamType: 0,
       protocol: type,
@@ -206,12 +214,13 @@ const getTopic = () => {
 const getTopicInfo = () => {
   return new Promise(async (resolve) => {
     const requestUrl = '/artemis/api/common/v1/event/getTopicInfo'
+    const requestUrl2 = '/artemis/api/nms/v1/alarm/getTopic'
 
     const body = JSON.stringify({
-      eventTypes: [131605, 131676, 131677, 131678, 131670]
+      // eventTypes: [131605, 131676, 131677, 131678, 131670]
     })
     const timeout = 15
-    const res = await Hikopenapi.httpPost(baseUrl + requestUrl, headers, body, appKey, appSecret, timeout)
+    const res = await Hikopenapi.httpPost(baseUrl + requestUrl2, headers, body, appKey, appSecret, timeout)
     resolve(res)
   })
 }
@@ -246,6 +255,8 @@ router.get('/getAlarm', async (ctx) => {
 router.get('/getWsUrl', async (ctx) => {
   const { code } = ctx.query ?? ''
   const result = await getUrl('ws', code)
+  console.log('result', result)
+
   let text = convertData(JSON.parse(result)?.data)
   ctx.body = text
 })
@@ -264,17 +275,19 @@ router.get('/getHlsUrl', async (ctx) => {
   ctx.body = text
 })
 
-const getMq = async () => {
+const getStompMq = async () => {
   const result = await getTopicInfo()
   let text = convertData(JSON.parse(result)?.data)
-  if (text.data && text.data.topicName) {
-    const { host, clientId, userName, password } = result.data
-    const ip = '192.168.10.10'
-    const port = 1883
+  if (text?.data && text?.data?.topicName) {
+    const { host, clientId, userName, password, topicName } = text?.data
+    const hostArr = host.replace('tcp://', '').split(':')
+    const ip = hostArr[0]
+    const port = parseInt(hostArr[1])
     const headers = {
-      clientId,
-      userName,
-      password
+      host,
+      'client-id': clientId,
+      login: userName,
+      passcode: password
     }
     // const headers = {
     //     // login: 'artemis_27104148',
@@ -285,31 +298,9 @@ const getMq = async () => {
     // }
     const onConnected = (frame) => {
       console.log(frame)
-      client.subscribe(
-        // 订阅到交换机
-        'artemis/event_face/3187675137/admin',
-        responseCallback
-      )
-      client.subscribe(
-        // 订阅到交换机
-        'artemis/event_physicalConfront/131677/admin',
-        responseCallback
-      )
-      client.subscribe(
-        // 订阅到交换机
-        'artemis/event_framesPeopleCounting/131676/admin',
-        responseCallback
-      )
-      client.subscribe(
-        // 订阅到交换机
-        'artemis/event_indoorPhysicalConfront/131678/admin',
-        responseCallback
-      )
-      client.subscribe(
-        // 订阅到交换机
-        'artemis/event_fallDown/131605/admin',
-        responseCallback
-      )
+      Object.keys(topicName).forEach((key) => {
+        client.subscribe(topicName[key], responseCallback)
+      })
     } // 失败后的处理
     const responseCallback = (frame) => {
       console.log(frame.body)
@@ -324,7 +315,7 @@ const getMq = async () => {
     const onFailed = (frame) => {
       console.log('MQ Failed: ' + frame) // 失败后  等待5秒后重新连接
       setTimeout(() => {
-        const client = Stomp.overTCP(ip, port)
+        const client = StompNode.overTCP(ip, port)
         client.connect(headers, onConnected, onFailed)
       }, 3000)
     }
@@ -332,7 +323,48 @@ const getMq = async () => {
     client.connect(headers, onConnected, onFailed)
   }
 }
-// getMq()
+// getStompMq()
+
+// 通过mqtt获取mq消息，之后通过websocket转发给前端
+const getMqttMq = async () => {
+  // 获取mq订阅信息
+  const result = await getTopicInfo()
+  const text = convertData(JSON.parse(result)?.data)
+  if (text.data && text.data.topicName) {
+    const { host, clientId, userName, password, topicName } = text?.data
+    // 创建mqtt客户端连接mq服务器
+    const mqClient = mqtt.connect(host, {
+      clientId,
+      clean: true,
+      connectTimeout: 4000,
+      login: userName,
+      passcode: password,
+      reconnectPeriod: 1000
+    })
+    // topic对象转换为数组，便于订阅
+    const topicArr = Object.values(topicName)
+    mqClient.on('connect', (e) => {
+      console.log('Connected', e)
+      wsMq.on('connection', (ws) => {
+        wsClients.add(ws)
+        ws.on('close', () => wsClients.delete(ws))
+      })
+      // 订阅
+      mqClient.subscribe(topicArr, () => {
+        console.log(`Subscribe to topic '${topicArr}'`)
+      })
+    })
+    mqClient.on('message', (topic, message) => {
+      console.log('Received Message:', topic, message.toString())
+      // 转发消息
+      const msg = JSON.stringify({ topic, data: payload.toString() })
+      wsClients.forEach((client) => client.send(msg))
+    })
+  } else {
+    console.log('获取MQ信息失败:', convertData(JSON.parse(result)?.data))
+  }
+}
+// getMqttMq()
 
 app.use(router.routes()).use(router.allowedMethods()) //把前面所有定义的方法添加到app应用上去
 app.listen(4885)
