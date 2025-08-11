@@ -952,28 +952,28 @@ patrol.on('connection', (ws) => {
       obj.devYxInfo.push(ykObj)
       ws.send(JSON.stringify(obj))
 
-      // setTimeout(() => {
-      //   const result = Mock.mock({
-      //     type: 'update',
-      //     data: []
-      //   })
-      //   const data = {
-      //     devId: res.RegDevId,
-      //     devYxInfo: []
-      //   }
-      //   obj.devYxInfo.slice(0, obj.devYxInfo.length - 1).forEach((val, key) => {
-      //     data.devYxInfo.push(
-      //       Mock.mock({
-      //         devYxName: val.devYxName,
-      //         devYxDesc: '描述' + key,
-      //         devYxStateDesc: `状态描述${key}已更新`,
-      //         'devYxStateAlarmFlag|1': [0, 1]
-      //       })
-      //     )
-      //   })
-      //   result.data.push(data)
-      //   ws.send(JSON.stringify(result))
-      // }, 2000)
+      setTimeout(() => {
+        const result = Mock.mock({
+          type: 'update',
+          data: []
+        })
+        const data = {
+          devId: res.RegDevId,
+          devYxInfo: []
+        }
+        obj.devYxInfo.slice(0, obj.devYxInfo.length - 1).forEach((val, key) => {
+          data.devYxInfo.push(
+            Mock.mock({
+              devYxName: val.devYxName,
+              devYxDesc: '描述' + key,
+              devYxStateDesc: `状态描述${key}已更新`,
+              'devYxStateAlarmFlag|1': [0, 1]
+            })
+          )
+        })
+        result.data.push(data)
+        ws.send(JSON.stringify(result))
+      }, 2000)
     }
   })
   //推送
