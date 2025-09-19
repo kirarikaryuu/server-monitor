@@ -325,12 +325,12 @@ wsPublic.on('connection', (ws) => {
           {
             envAreaTypeID: 1, //0:站台,1:站厅
             envNameTypeID: 0,
-            monitorYcValue: Random.natural(-20, 40)
+            monitorYcValue: Random.natural(-20, 60)
           },
           {
             envAreaTypeID: 1,
             envNameTypeID: 1,
-            monitorYcValue: Random.natural(0, 100)
+            monitorYcValue: Random.natural(50, 100)
           },
           {
             envAreaTypeID: 1,
@@ -355,12 +355,12 @@ wsPublic.on('connection', (ws) => {
           {
             envAreaTypeID: 0,
             envNameTypeID: 0,
-            monitorYcValue: Random.natural(-20, 40)
+            monitorYcValue: Random.natural(-20, 60)
           },
           {
             envAreaTypeID: 0,
             envNameTypeID: 1,
-            monitorYcValue: Random.natural(0, 100)
+            monitorYcValue: Random.natural(50, 100)
           },
           {
             envAreaTypeID: 0,

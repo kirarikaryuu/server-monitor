@@ -17,6 +17,22 @@ const router = new Router()
 const wsMq = new WebSocket.Server({ port: 9119 })
 const wsClients = new Set()
 
+// 保存数据
+function writeArrayToJsonFile(array, filePath) {
+  const jsonString = JSON.stringify(array, null, 2) // 将数组转换为JSON字符串，并美化输出
+  fs.writeFile(filePath, jsonString, (err) => {
+    if (err) {
+      console.error('写入文件时出错:', err)
+    }
+  })
+}
+
+// 获取本站的摄像头列表
+const fs = require('fs')
+const { json } = require('stream/consumers')
+const data = fs.readFileSync('./mergeCode.json')
+const cameraList = JSON.parse(data)
+
 // 是否为测试环境
 const isTest = true
 // 凯发 10.70
@@ -300,6 +316,11 @@ const getMqttMq = async () => {
           } else {
             data = JSON.parse(message.toString())
           }
+          // 判断是否属于本车站
+          const index = cameraList.findIndex((item) => item?.code === data?.deviceIndexcode)
+          if (index === -1) {
+            return
+          }
           const type = data?.eventType
           console.log('eventType', type)
           switch (type) {
@@ -313,6 +334,16 @@ const getMqttMq = async () => {
               })
               break
             case 'framesPeopleCounting':
+              // 隔日的数据要清除
+              if (peopleArr.length > 0) {
+                const time1 = JSON.parse(peopleArr[0])?.happenedTime
+                const time2 = JSON.parse(message.toString())?.happenedTime
+                if (!isSameDate(time1, time2)) {
+                  peopleArr.splice(0, peopleArr.length)
+                }
+              }
+              peopleArr.push(message.toString())
+              writeArrayToJsonFile(peopleArr, '/testdata/framesPeopleCounting.json')
               // 转发消息
               wsClients.forEach((client) => {
                 client.send(message.toString())
@@ -334,11 +365,12 @@ const getMqttMq = async () => {
                 const time1 = JSON.parse(inoutArr[0])?.happenedTime
                 const time2 = JSON.parse(message.toString())?.happenedTime
                 if (!isSameDate(time1, time2)) {
-                  inoutArr = []
+                  inoutArr.splice(0, inoutArr.length)
                 }
               }
 
               inoutArr.push(message.toString())
+              writeArrayToJsonFile(inoutArr, '/testdata/PeopleCounting.json')
               // 转发消息
               wsClients.forEach((client) => {
                 client.send(message.toString())
@@ -358,15 +390,30 @@ const getMqttMq = async () => {
 
 if (isTest) {
   wsMq.on('connection', (ws) => {
+    console.log('connect mq test ws')
+
     const fs = require('fs')
-    fs.readFile('mqdata.json', 'utf8', (err, res) => {
-      if (err) {
-        console.error(err)
-        return
-      }
-      const data = JSON.parse(res)
-      data.forEach((v) => {
+    send2 = () => {
+      fs.readFile('mqdata1.json', 'utf8', (err, res) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+        const data1 = JSON.parse(res)
+        // data1.forEach((v) => {
+        const v = data1[1]
         const data = JSON.parse(v.payload)
+        if (data.transInfo) {
+          const transInfo = JSON.parse(data.transInfo)
+          if (data?.eventType === 'framesPeopleCounting') {
+            transInfo?.analysisResult?.forEach((result) => {
+              result?.behaviorAnalysisResult?.forEach((detail) => {
+                detail.behaviorAttrs.framesPeopleCountingNum = Random.natural(0, 100)
+              })
+            })
+          }
+          data.transInfo = JSON.stringify(transInfo)
+        }
         data.happenedTime = dayjs(parseInt(data.happenedTime))
           .set('year', dayjs().year())
           .set('month', dayjs().month())
@@ -374,16 +421,20 @@ if (isTest) {
           .valueOf()
         v.payload = JSON.stringify(data)
         data.happenedTime = ws.send(JSON.stringify(v))
+        // })
       })
-    })
+    }
 
-    // let count = 0
-    // const send = () => {
-    //   ws.send(JSON.stringify(data[Random.natural(0, data.length - 1)]))
-    //   ws.send(JSON.stringify(data[Random.natural(0, data.length - 1)]))
-    //   count++
-    // }
+    let count = 0
+    const send = () => {
+      console.log('send', data[Random.natural(0, data.length - 1)])
+      ws.send(JSON.stringify(data[Random.natural(0, data.length - 1)]))
+      ws.send(JSON.stringify(data[Random.natural(0, data.length - 1)]))
+      count++
+    }
     // send()
-    // const timer = setInterval(send, 1000)
+    const timer = setInterval(() => {
+      send2()
+    }, 2000)
   })
 }
