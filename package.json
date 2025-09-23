@@ -19,6 +19,7 @@
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "dayjs": "^1.11.13",
     "dmdb": "^1.0.33801",
     "express": "^4.18.1",
     "express-ws": "^5.0.2",
