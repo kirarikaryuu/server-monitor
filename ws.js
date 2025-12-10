@@ -744,7 +744,7 @@ alarm.on('connection', (ws) => {
       'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
       tonetimes: '语音报警次数', //暂时未用到
       equipmentid: sxlList[index] + '',
-      station_desc: '渌水道站',
+      station_desc: '鼓楼站',
       'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       'eventtype|1': [
@@ -753,7 +753,7 @@ alarm.on('connection', (ws) => {
         3018, 3019, 3020, 3021, 3022, 3023, 3024, 3025
       ],
       member_name0: '成员名', //暂时未用到
-      char_info: '宇视系统IABA:109VC渌水道-上行尾' + index,
+      char_info: '宇视系统IABA:109VC鼓楼-上行尾' + index,
       tone_info: '事件语音内容', //暂时未用到
       // 'cameraGrp|0-4': [0] //摄像机组名
       'cameraGrp|1': [
@@ -810,7 +810,7 @@ alarm.on('connection', (ws) => {
             3017, 3018, 3019, 3020, 3021, 3022, 3023, 3024, 3025
           ],
           member_name0: '成员名', //暂时未用到
-          char_info: '宇视系统IABA:109VC渌水道-上行尾' + count,
+          char_info: '宇视系统IABA:109VC鼓楼-上行尾' + count,
           tone_info: '事件语音内容', //暂时未用到
           // 'cameraGrp|0-4': [0] //摄像机组名
           'cameraGrp|1': [
@@ -864,7 +864,7 @@ alarm.on('connection', (ws) => {
             alarmlevel: Random.natural(0, 3),
             'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
             tonetimes: '语音报警次数', //暂时未用到
-            station_desc: '渌水道站',
+            station_desc: '鼓楼站',
             'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
             member_name0: '成员名', //暂时未用到
             char_info: '电伴热|||DBR_s_032号回路系统运行/停止状态',
@@ -1155,12 +1155,12 @@ testUnity.on('connection', (ws) => {
       'alarmstate|1': [1, 2, 3], //报警、事故、恢复、已确认
       tonetimes: '语音报警次数', //暂时未用到
       equipmentid: devArr[index],
-      station_desc: '渌水道站',
+      station_desc: '鼓楼站',
       // 'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
       'system_name|1': ['AFC', 'BAS', 'CCTV', 'ACS'],
       'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
       member_name0: '成员名', //暂时未用到
-      char_info: '宇视系统|||IABA:109VC渌水道-上行尾' + index,
+      char_info: '宇视系统|||IABA:109VC鼓楼-上行尾' + index,
       tone_info: '事件语音内容', //暂时未用到
       'cameraGrp|1': [['74bc15fcd4dd4fd18f4bd3c323b0afe3', '0deb1bb3a0fb4e91b77b1cc44db64864']] //摄像机组名
     })
@@ -1201,7 +1201,7 @@ testUnity.on('connection', (ws) => {
           alarmlevel: Random.natural(0, 3),
           'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
           tonetimes: '语音报警次数', //暂时未用到
-          station_desc: '渌水道站',
+          station_desc: '鼓楼站',
           'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
           system_desc: '环控BAS',
           'eventtype|1': [
@@ -1337,7 +1337,7 @@ wsReport.on('connection', (ws) => {
           alarmlevel: Random.natural(0, 3),
           'alarmstate|1': [1, 2, 3, 4, 5], //报警、事故、恢复、已确认
           tonetimes: 1, //暂时未用到
-          station_desc: '渌水道站',
+          station_desc: '鼓楼站',
           'system_name|1': ['ctbz', 'wbqb', 'xjbz', 'xtbz', 'bsll', 'yqbz', 'tkbz'],
           system_desc: '环控BAS',
           'eventtype|1': [1002, 1007, 1011, 2004],

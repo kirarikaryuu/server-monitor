@@ -290,12 +290,12 @@ const getMqttMq = async () => {
         messageArr.forEach((msg) => {
           ws.send(msg)
         })
-        inoutArr.forEach((msg) => {
-          ws.send(msg)
-        })
-        peopleArr.forEach((msg) => {
-          ws.send(msg)
-        })
+        // inoutArr.forEach((msg) => {
+        //   ws.send(msg)
+        // })
+        // peopleArr.forEach((msg) => {
+        //   ws.send(msg)
+        // })
         ws.on('close', () => {
           console.log('delete ws')
           wsClients.delete(ws)
@@ -341,7 +341,7 @@ const getMqttMq = async () => {
               // 转发消息
               wsClients.forEach((client) => {
                 client.send(message.toString())
-                if (messageArr.length > 100) messageArr.shift()
+                if (messageArr.length > 30) messageArr.shift()
               })
               break
             case 'framesPeopleCounting':

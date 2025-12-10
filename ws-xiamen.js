@@ -4612,7 +4612,7 @@ testUnity.on('connection', (ws) => {
         'alarmstate|1': [1, 2, 3], //报警、事故、恢复、已确认
         tonetimes: '语音报警次数', //暂时未用到
         equipmentid: v,
-        station_desc: '渌水道站',
+        station_desc: '鼓楼站',
         'system_name|1': ['PIS', 'AFC', 'DQHZ', 'PA', 'BAS', 'ACS', 'PSD', 'FG'],
         'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
         member_name0: '成员名', //暂时未用到
@@ -4730,7 +4730,7 @@ testUnity.on('connection', (ws) => {
           alarmlevel: Random.natural(0, 3),
           'alarmstate|1': [1, 2, 3, 4, 5, null], //报警、事故、恢复、已确认
           tonetimes: '语音报警次数', //暂时未用到
-          station_desc: '渌水道站',
+          station_desc: '鼓楼站',
           // 'system_desc|1': ['AA系统', 'BB系统', 'CC系统'],
           system_desc: '环控BAS',
           member_name0: '成员名', //暂时未用到
