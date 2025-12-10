@@ -529,6 +529,7 @@ const getMqttMq = async () => {
             name: null
           }
           const devArr = Object.keys(setMqDetailPersonObj[code])
+          const indicesToDelete = []
           devArr.forEach((val, key) => {
             const nowTime = parseInt(val)
             if (nowTime >= fromTime && nowTime < toTime) {
@@ -538,9 +539,16 @@ const getMqttMq = async () => {
               }
               const thisCount = setMqDetailPersonObj[code][val].count
               tempCountObj.count = tempCountObj.count > thisCount ? tempCountObj.count : thisCount
-              devArr.splice(key, 1)
+              // devArr.splice(key, 1)
+              indicesToDelete.push(key)
             }
           })
+          // 逆序删除收集到的索引
+          indicesToDelete
+            .sort((a, b) => b - a)
+            .forEach((index) => {
+              devArr.splice(index, 1)
+            })
           if (hasFlag) {
             if (!flowDetailData[code]) {
               flowDetailData[code] = []
@@ -584,15 +592,23 @@ const getMqttMq = async () => {
           let tempIn = 0
           let tempOut = 0
           const devArr = Object.keys(setMqInoutObj[code])
+          const indicesToDelete = []
           devArr.forEach((val, key) => {
             const nowTime = parseInt(val)
             if (nowTime >= fromTime && nowTime < toTime) {
               hasFlag = true
               tempIn = tempIn > setMqInoutObj[code][val].in ? tempIn : setMqInoutObj[code][val].in
               tempOut = tempOut > setMqInoutObj[code][val].out ? tempOut : setMqInoutObj[code][val].out
-              devArr.splice(key, 1)
+              // devArr.splice(key, 1)
+              indicesToDelete.push(key)
             }
           })
+          // 逆序删除收集到的索引
+          indicesToDelete
+            .sort((a, b) => b - a)
+            .forEach((index) => {
+              devArr.splice(index, 1)
+            })
           inCount += tempIn
           outCount += tempOut
         })
@@ -837,6 +853,7 @@ const testMq = async () => {
               name: null
             }
             const devArr = Object.keys(setMqDetailPersonObj[code])
+            const indicesToDelete = []
             devArr.forEach((val, key) => {
               const nowTime = parseInt(val)
               if (nowTime >= fromTime && nowTime < toTime) {
@@ -846,9 +863,16 @@ const testMq = async () => {
                 }
                 const thisCount = setMqDetailPersonObj[code][val].count
                 tempCountObj.count = tempCountObj.count > thisCount ? tempCountObj.count : thisCount
-                devArr.splice(key, 1)
+                // devArr.splice(key, 1)
+                indicesToDelete.push(key)
               }
             })
+            // 逆序删除收集到的索引
+            indicesToDelete
+              .sort((a, b) => b - a)
+              .forEach((index) => {
+                devArr.splice(index, 1)
+              })
             if (hasFlag) {
               if (!flowDetailData[code]) {
                 flowDetailData[code] = []
@@ -892,15 +916,22 @@ const testMq = async () => {
             let tempIn = 0
             let tempOut = 0
             const devArr = Object.keys(setMqInoutObj[code])
+            const indicesToDelete = []
             devArr.forEach((val, key) => {
               const nowTime = parseInt(val)
               if (nowTime >= fromTime && nowTime < toTime) {
                 hasFlag = true
                 tempIn = tempIn > setMqInoutObj[code][val].in ? tempIn : setMqInoutObj[code][val].in
                 tempOut = tempOut > setMqInoutObj[code][val].out ? tempOut : setMqInoutObj[code][val].out
-                devArr.splice(key, 1)
+                // devArr.splice(key, 1)
+                indicesToDelete.push(key)
               }
             })
+            indicesToDelete
+              .sort((a, b) => b - a)
+              .forEach((index) => {
+                devArr.splice(index, 1)
+              })
             inCount += tempIn
             outCount += tempOut
           })
